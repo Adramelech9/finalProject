@@ -11,7 +11,7 @@
 	<groupId>com.itransition.training.task04</groupId>
 	<artifactId>Users</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<name>Users</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
