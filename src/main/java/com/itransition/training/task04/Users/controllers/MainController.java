@@ -26,7 +26,7 @@ public class MainController {
         model.addAttribute("countByGithub", userRepository.countBySocialNetwork("github"));
 
 
-        return "../static/index";
+        return "redirect:/#_=_";
     }
 
     @GetMapping("/delete/{id}")
