@@ -16,19 +16,6 @@ public class MainController {
         this.userRepository = userRepository;
     }
 
-
-    @GetMapping ("/")
-    public String controlPanel(Model model) {
-        model.addAttribute("users", userRepository.findAll());
-        model.addAttribute("countUsers", userRepository.count());
-        model.addAttribute("countByFacebook", userRepository.countBySocialNetwork("facebook"));
-        model.addAttribute("countByGoogle", userRepository.countBySocialNetwork("google"));
-        model.addAttribute("countByGithub", userRepository.countBySocialNetwork("github"));
-
-
-        return "redirect:/#_=_";
-    }
-
     @GetMapping("/delete/{id}")
     public String editActive(@PathVariable(value = "id") String id) {
         TableUsers tableUsers = userRepository.findById(id).orElseThrow();
