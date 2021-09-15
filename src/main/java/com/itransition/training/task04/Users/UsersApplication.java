@@ -47,15 +47,13 @@ public class UsersApplication extends WebSecurityConfigurerAdapter {
 		this.userRepository = userRepository;
 	}
 
-
-
 	@GetMapping("/user")
 	public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal, Model model) {
 
 		String id = principal.getName();
 		TableUsers tableUsers = userRepository.findById(id).orElseGet(() -> {
 			TableUsers newUser = new TableUsers();
-			newUser.setSocialNetwork(id.length() > 20 ? "google" : "facebook");
+			newUser.setSocialNetwork(id.length() >= 20  ? "google" : id.length() > 10 && id.length() < 20 ? "facebook" : "github");
 			newUser.setId(id);
 			newUser.setUserName(principal.getAttribute("name"));
 			newUser.setActive(true);
@@ -65,8 +63,7 @@ public class UsersApplication extends WebSecurityConfigurerAdapter {
 		});
 		tableUsers.setLastEntry(LocalDateTime.now());
 		userRepository.save(tableUsers);
-
-		model.addAttribute("numIsFacebook" , userRepository.countBySocialNetwork("facebook"));
+		if (!tableUsers.isActive()) model.addAttribute("isBlocked", "This account is blocked.");
 		return Collections.singletonMap("name", principal.getAttribute("name"));
 	}
 
