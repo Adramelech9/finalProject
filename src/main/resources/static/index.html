@@ -19,7 +19,7 @@
 </head>
 <body>
 <h1>Welcome, <span id="user"></span></h1>
-<div class="alert alert-danger" role="alert" th:if="${isBlocked}"></div>
+<div class="alert alert-danger" role="alert" th:if="${isBlocked}"><p th:text="${isBlocked}" /></div>
 
 <div class="container unauthenticated">
     With GitHub: <a href="/oauth2/authorization/github">click here</a><br>
