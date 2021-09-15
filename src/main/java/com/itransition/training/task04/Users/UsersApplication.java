@@ -67,11 +67,6 @@ public class UsersApplication extends WebSecurityConfigurerAdapter {
 		userRepository.save(tableUsers);
 
 		model.addAttribute("numIsFacebook" , userRepository.countBySocialNetwork("facebook"));
-		model.addAttribute("users", userRepository.findAll());
-		model.addAttribute("countUsers", userRepository.count());
-		model.addAttribute("countByFacebook", userRepository.countBySocialNetwork("facebook"));
-		model.addAttribute("countByGoogle", userRepository.countBySocialNetwork("google"));
-		model.addAttribute("countByGithub", userRepository.countBySocialNetwork("github"));
 		return Collections.singletonMap("name", principal.getAttribute("name"));
 	}
 
