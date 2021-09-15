@@ -2,7 +2,7 @@ package com.itransition.training.task04.Users;
 
 import com.itransition.training.task04.Users.models.TableUsers;
 import com.itransition.training.task04.Users.repository.UserRepository;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -23,13 +23,13 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
-
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -46,54 +46,27 @@ public class UsersApplication extends WebSecurityConfigurerAdapter {
 	public UsersApplication(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
-	/*@Bean
-	public WebClient rest(ClientRegistrationRepository clients, OAuth2AuthorizedClientRepository authz) {
-		ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
-				new ServletOAuth2AuthorizedClientExchangeFilterFunction(clients, authz);
-		return WebClient.builder()
-				.filter(oauth2).build();
-	}
 
-	@Bean
-	public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService(WebClient rest) {
-		DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
-		return request -> {
-			OAuth2User user = delegate.loadUser(request);
-			if (!"github".equals(request.getClientRegistration().getRegistrationId())) {
-				return user;
-			}
 
-			OAuth2AuthorizedClient client = new OAuth2AuthorizedClient
-					(request.getClientRegistration(), user.getName(), request.getAccessToken());
-			String url = user.getAttribute("organizations_url");
-			List<Map<String, Object>> orgs = rest
-					.get().uri(url)
-					.attributes(oauth2AuthorizedClient(client))
-					.retrieve()
-					.bodyToMono(List.class)
-					.block();
-
-			if (orgs.stream().anyMatch(org -> "spring-projects".equals(org.get("login")))) {
-				return user;
-			}
-
-			throw new OAuth2AuthenticationException(new OAuth2Error("invalid_token", "Not in Spring Team", ""));
-		};
-	}*/
 
 	@GetMapping("/user")
-	public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal, TableUsers tableUsers) {
-		String nameUser = String.valueOf(Collections.singletonMap("name", principal.getAttribute("name"))).substring(6, (String.valueOf(Collections.singletonMap("name", principal.getAttribute("name"))).length() - 1));
-		String networkUser = (String.valueOf(Collections.singletonMap("html_url", principal.getAttribute("html_url")))).length() > 15 ? "github" : "facebook";
-		TableUsers userFromDB = userRepository.findByUserName(tableUsers.getUserName());
-		if (nameUser != null && userFromDB == null) {
-			tableUsers.setUserName(nameUser);
-			tableUsers.setSocialNetwork(networkUser);
-			tableUsers.setActive(true);
-			tableUsers.setFirstEntry(LocalDateTime.now());
-			tableUsers.setLastEntry(LocalDateTime.now());
-			userRepository.save(tableUsers);
-		}
+	public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal, Model model) {
+
+		String id = principal.getName();
+		TableUsers tableUsers = userRepository.findById(id).orElseGet(() -> {
+			TableUsers newUser = new TableUsers();
+			newUser.setSocialNetwork(id.length() > 20 ? "google" : "facebook");
+			newUser.setId(id);
+			newUser.setUserName(principal.getAttribute("name"));
+			newUser.setActive(true);
+			newUser.setFirstEntry(LocalDateTime.now());
+
+			return newUser;
+		});
+		tableUsers.setLastEntry(LocalDateTime.now());
+		userRepository.save(tableUsers);
+
+		model.addAttribute("numIsFacebook" , userRepository.countBySocialNetwork("facebook"));
 		return Collections.singletonMap("name", principal.getAttribute("name"));
 	}
 
@@ -109,7 +82,6 @@ public class UsersApplication extends WebSecurityConfigurerAdapter {
 		protected void configure(HttpSecurity http) throws Exception {
 			SimpleUrlAuthenticationFailureHandler handler = new SimpleUrlAuthenticationFailureHandler("/");
 
-			// @formatter:off
 			http.antMatcher("/**")
 					.authorizeRequests(a -> a
 							.antMatchers("/", "/error", "/webjars/**").permitAll()

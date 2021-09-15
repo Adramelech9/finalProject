@@ -8,4 +8,7 @@ spring:
             clientSecret: 4a5d28bce8b28a1f507061d9d579d0b0
           github:
             clientId: 7b82eb4cdffb98597940
-            clientSecret: 7c57bb798e0c2d504ea47d975d772e016479b0ef
+            clientSecret: b96775c3f5d3bcf12760b735105f7d5dff26bf79
+          google:
+            clientId: 891817911498-piu9bj4lk4bchitjai412osmhpa417ul.apps.googleusercontent.com
+            clientSecret: 59iEFDOKmcY0EvtDYVSakRq1

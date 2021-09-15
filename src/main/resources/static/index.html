@@ -18,31 +18,59 @@
 
 </head>
 <body>
-<h1>Welcome</h1>
-<div class = "error text-hazard error"> </div>
+<h1>Welcome, <span id="user"></span></h1>
+<div class="alert alert-warning error text-hazard error" role="alert" th:if="${error}"></div>
 
 <div class="container unauthenticated">
-    With GitHub: <a href="/oauth2/authorization/github">click here</a>
+    With GitHub: <a href="/oauth2/authorization/github">click here</a><br>
+    With Facebook: <a href="/oauth2/authorization/facebook">click here</a><br>
+    With Google: <a href="/oauth2/authorization/google">click here</a>
 </div>
-<div class="container unauthenticated">
-    With Facebook: <a href="/oauth2/authorization/facebook">click here</a>
-</div>
+
 <div class="container authenticated" style="display:none">
-    <tr th:each="el : ${users}" >
-        <td th:text="${el.id}"/>
-        <td th:text="${el.userName}"/>
-        <td th:text="${el.socialNetwork}"/>
-        <td th:text="${el.firstEntry}"/>
-        <td th:text="${el.lastEntry}"/>
-        <td th:text="${el.isActive()}"/>
-        <td><a method="get" th:href="'delete/' + ${el.id}">del</a></td>
-        <br>
-    </tr>
-    Logged in as: <span id="user"></span>
     <div>
         <button onClick="logout()" class="btn btn-primary">Logout</button>
     </div>
+    <br>
+
+    <table class="table" id="table">
+        <thead>
+        <td class="checkbox select-all">
+            <input id="all" type="checkbox" />
+            <label for="all"></label>
+        </td>
+        <td>id</td>
+        <td>username</td>
+        <td>socialNetwork</td>
+        <td>firstEntry</td>
+        <td>lastEntry</td>
+        <td>isActive</td>
+        </thead>
+        <tr th:each="el : ${users}">
+
+            <td class="checkbox rows">
+                <input id="${el.id}" type="checkbox" />
+                <label for="${el.id}"></label>
+            </td>
+            <td th:text="${el.id}"/>
+            <th th:text="${el.userName}"/>
+            <td th:text="${el.socialNetwork}"/>
+            <td th:text="${el.firstEntry}"/>
+            <td th:text="${el.lastEntry}"/>
+            <td th:text="${el.isActive()}"/>
+            <td><a method="get" th:href="'delete/' + ${el.id}">del</a></td><br>
+            <td><a method="get" th:href="'update/' + ${el.id}">update</a></td><br>
+
+        </tr>
+    </table>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">@</span>
+        </div>
+        <input type="text" class="form-control" aria-describedby="basic-addon1" id="input" onkeyup="filter()" placeholder="Search for username..">
+    </div>
 </div>
+
 <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
 <script type="text/javascript">
     $
@@ -52,7 +80,6 @@
                     || settings.type == 'DELETE') {
                     if (!(/^http:.*/.test(settings.url) || /^https:.*/
                         .test(settings.url))) {
-                        // Only send the token to relative URLs i.e. locally.
                         xhr.setRequestHeader("X-XSRF-TOKEN",
                             Cookies.get('XSRF-TOKEN'));
                     }
@@ -72,23 +99,25 @@
         })
         return true;
     };
-        google.charts.load("current", {packages:["corechart"]});
-        google.charts.setOnLoadCallback(drawChart);
-        function drawChart() {
+    google.charts.load("current", {packages:["corechart"]});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
         var data = google.visualization.arrayToDataTable([
-        ['Task', 'Hours per Day'],
-        ['GitHub',     11],
-        ['Facebook',    7]
+        ['network', 'count'],
+            ['Google',     7],
+        ['Facebook',    11],
+        ['Github',    1]
         ]);
 
         var options = {
-        title: 'User statistics',
-        is3D: true,
-    };
+            title: 'User statistics',
+            is3D: true,
+        };
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
         chart.draw(data, options);
     };
+
     $.get("/error", function(data) {
         if (data) {
             $(".error").html(data);
@@ -96,6 +125,34 @@
             $(".error").html('');
         }
     });
+
+    $('#all').change(function(e) {
+        if (e.currentTarget.checked) {
+            $('.rows').find('input[type="checkbox"]').prop('checked', true);
+        } else {
+            $('.rows').find('input[type="checkbox"]').prop('checked', false);
+        }
+    });
+
+    function filter() {
+        var input, filter, table, tr, th, i, txtValue;
+        input = document.getElementById("input");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("table");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            th = tr[i].getElementsByTagName("th")[0];
+            if (th) {
+                txtValue = th.textContent || th.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    };
 </script>
 </body>
 </html>

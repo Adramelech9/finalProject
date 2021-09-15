@@ -16,22 +16,34 @@ public class MainController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping ("/")
 
+    @GetMapping ("/")
     public String controlPanel(Model model) {
         model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("countUsers", userRepository.count());
+        model.addAttribute("countByFacebook", userRepository.countBySocialNetwork("facebook"));
+        model.addAttribute("countByGoogle", userRepository.countBySocialNetwork("google"));
+        model.addAttribute("countByGithub", userRepository.countBySocialNetwork("github"));
 
-        /*if (userFromDB != null) {
-            tableUsers.setLastEntry(LocalDateTime.now());
-            userRepository.save(tableUsers);
-        }*/
+
         return "../static/index";
     }
 
     @GetMapping("/delete/{id}")
-    public String editActive(@PathVariable(value = "id") long id, Model model) {
+    public String editActive(@PathVariable(value = "id") String id) {
         TableUsers tableUsers = userRepository.findById(id).orElseThrow();
         userRepository.delete(tableUsers);
+        return "redirect:/";
+    }
+
+    @GetMapping("/update/{id}")
+    public String updateActivity(@PathVariable(value = "id") String id) {
+        TableUsers tableUsers = userRepository.findById(id).orElseThrow();
+        boolean active = tableUsers.isActive();
+
+        if (active) tableUsers.setActive(false);
+        else tableUsers.setActive(true);
+        userRepository.save(tableUsers);
         return "redirect:/";
     }
 }
