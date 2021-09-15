@@ -16,6 +16,11 @@ public class MainController {
         this.userRepository = userRepository;
     }
 
+    @GetMapping ("/")
+    public String controlPanel() {
+        return "../static/index";
+    }
+
     @GetMapping("/delete/{id}")
     public String editActive(@PathVariable(value = "id") String id) {
         TableUsers tableUsers = userRepository.findById(id).orElseThrow();
