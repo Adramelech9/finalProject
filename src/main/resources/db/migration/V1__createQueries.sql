@@ -1,3 +1,5 @@
+create sequence hibernate_sequence start 1 increment 1;
+
 create table table_users (id varchar(255) not null,
 first_entry timestamp,
 is_active boolean not null,
