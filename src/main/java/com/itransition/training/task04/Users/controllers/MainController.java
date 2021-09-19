@@ -24,7 +24,6 @@ public class MainController {
         model.addAttribute("countByFacebook", userRepository.countBySocialNetwork("facebook"));
         model.addAttribute("countByGoogle", userRepository.countBySocialNetwork("google"));
         model.addAttribute("countByGithub", userRepository.countBySocialNetwork("github"));
-        
         return "../static/index";
     }
 

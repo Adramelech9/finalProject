@@ -9,5 +9,4 @@ public interface UserRepository extends JpaRepository<TableUsers, String> {
 
     @Query("select count(t) from TableUsers t where t.socialNetwork=:socialNetwork")
     Long countBySocialNetwork(String socialNetwork);
-
 }
