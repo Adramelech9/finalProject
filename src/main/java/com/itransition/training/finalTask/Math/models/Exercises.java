@@ -1,7 +1,11 @@
 package com.itransition.training.finalTask.Math.models;
 
+import com.itransition.training.finalTask.Math.models.util.ExercisesHelper;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Exercises {
@@ -11,15 +15,30 @@ public class Exercises {
     @NotBlank(message = "The field cannot be empty")
     private String name, condition, theme, rightAnswers;
     private String tags, images;
-    //private int sumRating = 0, numOfVotes = 0;
+    //private int sumRating, numOfVotes;
     //private int likes, dislikes;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;
 
+    @ManyToMany
+    @JoinTable(
+            name = "exercise_likes",
+            joinColumns = {@JoinColumn(name = "exercise_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private Set<User> likes = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "exercise_dislikes",
+            joinColumns = {@JoinColumn(name = "exercise_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private Set<User> dislikes = new HashSet<>();
+
     public String getAuthorName() {
-        return author != null ? author.getUsername() : "<none>";
+        return ExercisesHelper.getAuthorName(author);
     }
 
     public Exercises() {
@@ -98,5 +117,21 @@ public class Exercises {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public Set<User> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<User> likes) {
+        this.likes = likes;
+    }
+
+    public Set<User> getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(Set<User> dislikes) {
+        this.dislikes = dislikes;
     }
 }

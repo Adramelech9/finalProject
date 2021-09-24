@@ -1,8 +1,5 @@
 package com.itransition.training.finalTask.Math;
 
-import com.itransition.training.finalTask.Math.models.Role;
-import com.itransition.training.finalTask.Math.models.User;
-import com.itransition.training.finalTask.Math.repository.UserRepository;
 import com.itransition.training.finalTask.Math.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -28,20 +25,12 @@ import java.util.Map;
 @RestController
 public class UsersApplication extends WebSecurityConfigurerAdapter {
 	@Autowired
-	private UserRepository userRepository;
-	public static String id;
+	private UserService userService;
+
 	@GetMapping("/user")
 	public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
+		userService.addUser(principal);
 
-		this.id = principal.getName();
-		userRepository.findById(id).orElseGet(() -> {
-			User newUser = new User();
-			newUser.setId(id);
-			newUser.setUsername(principal.getAttribute("name"));
-			newUser.setRoles(Collections.singleton(Role.USER));
-			userRepository.save(newUser);
-			return newUser;
-		});
 		return Collections.singletonMap("name", principal.getAttribute("name"));
 	}
 
@@ -79,8 +68,6 @@ public class UsersApplication extends WebSecurityConfigurerAdapter {
 							})
 					);
 	}
-	@Autowired
-	private UserService userService;
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {

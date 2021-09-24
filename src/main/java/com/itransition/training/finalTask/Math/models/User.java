@@ -19,6 +19,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
 
+    @ManyToMany(mappedBy = "likes")
+    private Set<Exercises> likes = new HashSet<>();
+
+    @ManyToMany(mappedBy = "dislikes")
+    private Set<Exercises> dislikes = new HashSet<>();
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Exercises> exercises;
 
@@ -26,9 +32,9 @@ public class User {
         return roles;
     }
 
-    public boolean isAdmin() {
+    /*public boolean isAdmin() {
         return roles.contains(Role.ADMIN);
-    }
+    }*/
 
     @Override
     public boolean equals(Object o) {
@@ -117,5 +123,21 @@ public class User {
 
     public void setTasksSolved(int tasksSolved) {
         this.tasksSolved = tasksSolved;
+    }
+
+    public Set<Exercises> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<Exercises> likes) {
+        this.likes = likes;
+    }
+
+    public Set<Exercises> getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(Set<Exercises> dislikes) {
+        this.dislikes = dislikes;
     }
 }

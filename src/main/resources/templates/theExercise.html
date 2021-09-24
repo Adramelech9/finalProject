@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Exercise</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
@@ -17,6 +19,14 @@
         <p th:text="${el.images}"/>
         <p th:text="${el.rightAnswers}"/>
         <p><b>author: </b> <span th:text="${el.authorName}"/></p>
+        <a th:href="'/exercises/' + ${el.id} +'/like'">
+            <i th:if="${like}"  class="fas fa-thumbs-up"></i>
+            <i th:if="${!like}"  class="far fa-thumbs-up"></i>
+        </a>
+        <a th:href="'/exercises/' + ${el.id} +'/dislike'">
+            <i th:if="${dislike}"  class="fas fa-thumbs-down"></i>
+            <i th:if="${!dislike}"  class="far fa-thumbs-down"></i>
+        </a>
     </div>
 </div>
 
