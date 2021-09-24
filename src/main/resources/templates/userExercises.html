@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Personal office</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:if="${isCurrentUser}" th:insert="parts/exercise :: createExercise"></div>
+<div th:if="${exercise}">
+    <form method="post">
+        <input type="text" name="name" placeholder="name" th:value="${exercise.name}"/><br>
+        <input type="text" name="theme" placeholder="theme" th:value="${exercise.theme}"/><br>
+        <input type="text" name="tags" placeholder="tags" th:value="${exercise.tags}"/><br>
+        <textarea type="text" name="condition" placeholder="condition">[[${exercise.condition}]]</textarea><br>
+        <input type="text" name="images" placeholder="images" th:value="${exercise.images}"/><br>
+        <input type="text" name="rightAnswers" placeholder="rightAnswers" th:value="${exercise.rightAnswers}"/><br>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/><br>
+        <button type="submit">edit</button>
+    </form>
+</div>
+<div>
+    <h1>personal achievements</h1>
+    <p><b>Tasks created: </b><span th:text="${user.getTasksCreated()}"/></p>
+    <p><b>Solved problems: </b><span text="in development"/></p>
+</div>
+    <table class="table" id="table">
+        <thead>
+            <td>name</td>
+            <td>theme</td>
+            <td>tags</td>
+            <td>link</td>
+        </thead>
+        <tr th:each="el : ${exercises}">
+            <th th:text="${el.name}"/>
+            <th th:text="${el.theme}"/>
+            <th th:text="${el.tags}"/>
+            <td><a th:href="'/exercises/' + ${el.id}"/>link</td>
+
+            <td th:if="${userId == el.author.id}">
+                <a th:href="'/office/' + ${el.author.id} + '?exercise=' + ${el.id}">
+                    edit
+                </a></td>
+            <td th:if="${userId == el.author.id}">
+                <a th:href="'/exercises/' + ${el.id} + '/delete'">del</a></td>
+
+        </tr>
+    </table>
+
+
+</body>
+</html>

@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Demo</title>
+    <title>Mathematics</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width" />
     <base href="/" />
@@ -16,66 +16,29 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="/webjars/js-cookie/js.cookie.js"></script>
 
-
 </head>
 <body>
-<h1>Welcome, <span id="user"></span></h1>
-<div class="alert alert-danger" role="alert" th:if="${isBlocked}"><p th:text="${isBlocked}" /></div>
+<a href="/language">lan</a>
+<a href="/design">design</a>
+<a href="/admin_panel">admin panel</a>
+<a href="/office">move to personal office</a>
+<a href="/exercises">exercises</a>
 
 <div class="container unauthenticated">
     With GitHub: <a href="/oauth2/authorization/github">click here</a><br>
     With Facebook: <a href="/oauth2/authorization/facebook">click here</a><br>
-    With Google: <a href="/oauth2/authorization/google">click here</a>
+    With Google: <a href="/oauth2/authorization/google">click here</a><br>
 </div>
 
 <div class="container authenticated" style="display:none">
+    <h1>Welcome, <span id="user"></span></h1>
+
     <div>
         <button onClick="logout()" class="btn btn-primary">Logout</button>
     </div>
     <br>
-    <table class="table" id="table">
-        <thead>
-        <td class="checkbox select-all">
-            <input id="all" type="checkbox" />
-            <label for="all"></label>
-        </td>
-        <td>id</td>
-        <td>username</td>
-        <td>socialNetwork</td>
-        <td>firstEntry</td>
-        <td>lastEntry</td>
-        <td><select >
-            <option selected="selected">isActive</option>
-            <option>true</option>
-            <option>false</option>
-        </select></td>
-        </thead>
-        <tr th:each="el : ${users}">
-
-            <td class="checkbox rows">
-                <input id="${el.id}" type="checkbox" />
-                <label for="${el.id}"></label>
-            </td>
-            <td th:text="${el.id}"/>
-            <th th:text="${el.userName}"/>
-            <td th:text="${el.socialNetwork}"/>
-            <td th:text="${el.firstEntry}"/>
-            <td th:text="${el.lastEntry}"/>
-            <td th:text="${el.isActive()}"/>
-            <td><a method="get" th:href="'delete/' + ${el.id}">del</a></td>
-            <td><a method="get" th:href="'update/' + ${el.id}">update</a></td>
-
-        </tr>
-    </table>
-    <div class="input-group mb-3">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">@</span>
-        </div>
-        <input type="text" class="form-control" aria-describedby="basic-addon1" id="input" onkeyup="filter()" placeholder="Search for username..">
-    </div>
 </div>
-
-<div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+<div th:insert="parts/exercise :: allExercises"></div>
 
 <script type="text/javascript">
     $
@@ -91,11 +54,13 @@
                 }
             }
         });
+
     $.get("/user", function(data) {
         $("#user").html(data.name);
         $(".unauthenticated").hide();
         $(".authenticated").show();
     });
+
     var logout = function() {
         $.post("/logout", function() {
             $("#user").html('');
@@ -105,78 +70,12 @@
         return true;
     };
 
-
-    google.charts.load("current", {packages:["corechart"]});
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-        ['network', 'count'],
-        ['Google',     [[${countByGoogle}]]],
-        ['Facebook', [[${countByFacebook}]]],
-        ['Github',    [[${countByGithub}]]]
-        ]);
-
-        var options = {
-            title: 'User statistics',
-            is3D: true,
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
-        chart.draw(data, options);
-    };
-
     $.get("/error", function(data) {
         if (data) {
             $(".error").html(data);
         } else {
             $(".error").html('');
         }
-    });
-
-    $('#all').change(function(e) {
-        if (e.currentTarget.checked) {
-            $('.rows').find('input[type="checkbox"]').prop('checked', true);
-        } else {
-            $('.rows').find('input[type="checkbox"]').prop('checked', false);
-        }
-    });
-
-    function filter() {
-        var input, filter, table, tr, th, i, txtValue;
-        input = document.getElementById("input");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("table");
-        tr = table.getElementsByTagName("tr");
-
-        for (i = 0; i < tr.length; i++) {
-            th = tr[i].getElementsByTagName("th")[0];
-            if (th) {
-                txtValue = th.textContent || th.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-    };
-    document.addEventListener('DOMContentLoaded', () => {
-        const getSort = ({ target }) => {
-            const order = (target.dataset.order = -(target.dataset.order || -1));
-            const index = [...target.parentNode.cells].indexOf(target);
-            const collator = new Intl.Collator(['en', 'ru'], { numeric: true });
-            const comparator = (index, order) => (a, b) => order * collator.compare(
-                a.children[index].innerHTML,
-                b.children[index].innerHTML
-            );
-            for(const tBody of target.closest('table').tBodies)
-                tBody.append(...[...tBody.rows].sort(comparator(index, order)));
-
-            for(const cell of target.parentNode.cells)
-                cell.classList.toggle('sorted', cell === target);
-        };
-        document.querySelectorAll('.table thead').forEach(tableTH => tableTH.addEventListener('click', () => getSort(event)));
     });
 </script>
 </body>

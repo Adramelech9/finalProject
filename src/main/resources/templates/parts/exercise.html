@@ -1,0 +1,42 @@
+<div th:fragment="createExercise">
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body alert-info mt-2">
+            <form action="/exercises" method="post">
+                <input type="text" name="name" placeholder="name"/><br>
+                <input type="text" name="theme" placeholder="theme"/>
+                <input type="text" name="tags" placeholder="tags"/><br>
+                <textarea type="text" name="condition" placeholder="condition"></textarea><br>
+                <input type="text" name="images" placeholder="images"/><br>
+                <input type="text" name="rightAnswers" placeholder="rightAnswers"/><br>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/><br>
+                <button type="submit">Create</button>
+            </form>
+        </div>
+    </div>
+    <p>
+        <button class="btn btn-primary m-lg-5" type="button" data-toggle="collapse"
+                data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Task creation
+        </button>
+    </p>
+</div>
+
+<div th:fragment="allExercises">
+    <div class="container mt-3">
+        <div th:each="el : ${exercises}" class="alert alert-info mt-2">
+            <!--<div>
+                <img th:src="@{/img/{filename}(filename = ${el.images})}">
+            </div> -->
+            <p th:text="${el.name}"/>
+            <p th:text="${el.theme}"/>
+            <p th:text="${el.tags}"/>
+            <b>Author: </b>
+            <a th:href="'/office/' + ${el.author.id}" th:text="${el.authorName}"></a><br>
+            <a th:href="'/exercises/' + ${el.id}" class="btn btn-warning">details</a><br>
+            <a th:href="'/office/' + ${el.author.id} + '?exercise=' + ${el.id}"
+               th:if="${userId == el.author.id}">edit</a></td>
+            <a th:href="'/exercises/' + ${el.id} + '/delete'" th:if="${userId == el.author.id}">delete</a>
+
+        </div>
+    </div>
+</div>

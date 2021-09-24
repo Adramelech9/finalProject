@@ -1,10 +1,14 @@
-package com.itransition.training.task04.Users;
+package com.itransition.training.finalTask.Math;
 
-import com.itransition.training.task04.Users.models.TableUsers;
-import com.itransition.training.task04.Users.repository.UserRepository;
+import com.itransition.training.finalTask.Math.models.Role;
+import com.itransition.training.finalTask.Math.models.User;
+import com.itransition.training.finalTask.Math.repository.UserRepository;
+import com.itransition.training.finalTask.Math.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,42 +16,32 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
 
 @SpringBootApplication
 @RestController
 public class UsersApplication extends WebSecurityConfigurerAdapter {
-	private final UserRepository userRepository;
-
-	public UsersApplication(UserRepository userRepository) {
-		this.userRepository = userRepository;
-	}
-
+	@Autowired
+	private UserRepository userRepository;
+	public static String id;
 	@GetMapping("/user")
-	public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal, Model model) {
+	public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
 
-		String id = principal.getName();
-		TableUsers tableUsers = userRepository.findById(id).orElseGet(() -> {
-			TableUsers newUser = new TableUsers();
-			newUser.setSocialNetwork(id.length() >= 20  ? "google" : id.length() > 10 && id.length() < 20 ? "facebook" : "github");
+		this.id = principal.getName();
+		userRepository.findById(id).orElseGet(() -> {
+			User newUser = new User();
 			newUser.setId(id);
-			newUser.setUserName(principal.getAttribute("name"));
-			newUser.setActive(true);
-			newUser.setFirstEntry(LocalDateTime.now());
-
+			newUser.setUsername(principal.getAttribute("name"));
+			newUser.setRoles(Collections.singleton(Role.USER));
+			userRepository.save(newUser);
 			return newUser;
 		});
-		tableUsers.setLastEntry(LocalDateTime.now());
-		userRepository.save(tableUsers);
-		if (!tableUsers.isActive()) model.addAttribute("isBlocked", "This account is blocked.");
 		return Collections.singletonMap("name", principal.getAttribute("name"));
 	}
 
@@ -61,11 +55,12 @@ public class UsersApplication extends WebSecurityConfigurerAdapter {
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			SimpleUrlAuthenticationFailureHandler handler = new SimpleUrlAuthenticationFailureHandler("/");
+			SimpleUrlAuthenticationFailureHandler handler =
+					new SimpleUrlAuthenticationFailureHandler("/");
 
 			http.antMatcher("/**")
 					.authorizeRequests(a -> a
-							.antMatchers("/", "/error", "/webjars/**").permitAll()
+							.antMatchers("/", "/error", "/webjars/**", "/exercises/*").permitAll()
 							.anyRequest().authenticated()
 					)
 					.exceptionHandling(e -> e
@@ -83,6 +78,13 @@ public class UsersApplication extends WebSecurityConfigurerAdapter {
 								handler.onAuthenticationFailure(request, response, exception);
 							})
 					);
+	}
+	@Autowired
+	private UserService userService;
+
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userService);
 	}
 
 	public static void main(String[] args) {

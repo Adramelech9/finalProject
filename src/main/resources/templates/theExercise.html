@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Exercise</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container mt-5">
+    <div th:each="el : ${exercises}" class="alert alert-info mt-2">
+        <h3 th:text="${el.name}"/>
+        <p th:text="${el.theme}"/>
+        <p th:text="${el.tags}"/>
+        <p th:text="${el.condition}"/>
+        <p th:text="${el.images}"/>
+        <p th:text="${el.rightAnswers}"/>
+        <p><b>author: </b> <span th:text="${el.authorName}"/></p>
+    </div>
+</div>
+
+</body>
+</html>

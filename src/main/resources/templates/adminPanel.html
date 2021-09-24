@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin panel</title>
+    <link rel="stylesheet" type="text/css"
+          href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+    <table class="table" id="table">
+        <thead>
+        <td>id</td>
+        <td>username</td>
+        <td>role</td>
+        <td>link</td>
+        <td>isActive</td>
+        </thead>
+        <tr th:each="el : ${users}">
+            <td th:text="${el.id}"/>
+            <th th:text="${el.username}"/>
+            <th th:text="${el.roles}"/>
+            <td><a th:href="'/user/' + ${el.id}"/>@</td>
+            <td th:text="${el.isActive()}"/>
+            <td><a th:href="'delete/' + ${el.id}">del</a></td>
+            <td><a th:href="'update/' + ${el.id}">update</a></td>
+
+        </tr>
+    </table>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">@</span>
+        </div>
+        <input type="text" class="form-control" aria-describedby="basic-addon1"
+               id="input" onkeyup="filter()" placeholder="Search for username..">
+    </div>
+    <script type="text/javascript">
+        function filter() {
+            var input, filter, table, tr, th, i, txtValue;
+            input = document.getElementById("input");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("table");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                th = tr[i].getElementsByTagName("th")[0];
+                if (th) {
+                    txtValue = th.textContent || th.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        };
+
+    </script>
+</body>
+</html>

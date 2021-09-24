@@ -7,8 +7,8 @@ spring:
             clientId: 976647026228082
             clientSecret: 4a5d28bce8b28a1f507061d9d579d0b0
           github:
-            clientId: 7b82eb4cdffb98597940
-            clientSecret: b96775c3f5d3bcf12760b735105f7d5dff26bf79
+            clientId: d1067d64986ddaf38667
+            clientSecret: 25ffd4efe6abe0570ee06d9e7b2dc3a42bdfbe9d
           google:
             clientId: 891817911498-piu9bj4lk4bchitjai412osmhpa417ul.apps.googleusercontent.com
             clientSecret: 59iEFDOKmcY0EvtDYVSakRq1

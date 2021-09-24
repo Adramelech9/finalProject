@@ -1,4 +1,4 @@
-package com.itransition.training.task04.Users;
+package com.itransition.training.finalTask.Math;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
