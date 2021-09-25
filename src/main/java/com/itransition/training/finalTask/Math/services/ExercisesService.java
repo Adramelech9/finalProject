@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -76,27 +77,26 @@ public class ExercisesService {
 
     public void changeLikes(OAuth2User currentUser, Exercises exercise) {
         User user = userService.getUser(currentUser);
-        if (getChecked(user, exercise.getLikes(), exercise.getDislikes(), exercise));
+        Set<User> likes = exercise.getLikes();
+        if (likes.contains(user)) likes.remove(user);
+        else {
+            likes.add(user);
+            Set<User> dislikes = exercise.getDislikes();
+            if (dislikes.contains(user)) dislikes.remove(user);
+        }
+        exerciseRepository.save(exercise);
     }
 
     public void changeDislikes(OAuth2User currentUser, Exercises exercise) {
         User user = userService.getUser(currentUser);
-        if (getChecked(user, exercise.getDislikes(), exercise.getLikes(), exercise));
-    }
-
-    private boolean getChecked(User user, Set<User> dislikes2, Set<User> likes2, Exercises exercise) {
-        Set<User> likes = dislikes2;
-        if (likes.contains(user)) {
-            likes.remove(user);
-            exerciseRepository.save(exercise);
-            return true;
-        } else {
-            likes.add(user);
-            Set<User> dislikes = likes2;
-            if (dislikes.contains(user)) dislikes.remove(user);
+        Set<User> dislikes = exercise.getLikes();
+        if (dislikes.contains(user)) dislikes.remove(user);
+        else {
+            dislikes.add(user);
+            Set<User> likes = exercise.getDislikes();
+            if (likes.contains(user)) likes.remove(user);
         }
         exerciseRepository.save(exercise);
-        return false;
     }
 
     public boolean isLiked(OAuth2User currentUser, Long id) {

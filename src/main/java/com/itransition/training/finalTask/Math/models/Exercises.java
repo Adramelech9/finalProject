@@ -29,6 +29,7 @@ public class Exercises {
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     private Set<User> likes = new HashSet<>();
+
     @ManyToMany
     @JoinTable(
             name = "exercise_dislikes",
@@ -36,6 +37,14 @@ public class Exercises {
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     private Set<User> dislikes = new HashSet<>();
+
+    /*@ManyToMany
+    @JoinTable(
+            name = "rating",
+            joinColumns = { @JoinColumn(name = "exercise_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private Set<User> rating = new HashSet<>();*/
 
     public String getAuthorName() {
         return ExercisesHelper.getAuthorName(author);
@@ -134,4 +143,5 @@ public class Exercises {
     public void setDislikes(Set<User> dislikes) {
         this.dislikes = dislikes;
     }
+
 }
