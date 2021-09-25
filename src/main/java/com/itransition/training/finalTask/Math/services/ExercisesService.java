@@ -51,9 +51,8 @@ public class ExercisesService {
 
     public void delete(OAuth2User currentUser, Long id) {
         userService.removeTask(currentUser);
-        Exercises exercises = getExercises(id);
-        if (currentUser.getName().equals(exercises.getAuthor().getId()))
-            exerciseRepository.delete(exercises);
+        if (currentUser.getName().equals(getExercises(id).getAuthor().getId()))
+            exerciseRepository.delete(getExercises(id));
     }
 
     public Long CreateExercises(String name, String condition, String theme, String tags, String images, String rightAnswers, OAuth2User currentUser) {
@@ -77,52 +76,36 @@ public class ExercisesService {
 
     public void changeLikes(OAuth2User currentUser, Exercises exercise) {
         User user = userService.getUser(currentUser);
-        Set<User> likes = exercise.getLikes();
-        if (likes.contains(user)) likes.remove(user);
-        else {
-            likes.add(user);
-            Set<User> dislikes = exercise.getDislikes();
-            if (dislikes.contains(user)) dislikes.remove(user);
-        }
+        if (exercise.getLikes().add(user))
+            exercise.getDislikes().remove(user);
+        else exercise.getLikes().remove(user);
         exerciseRepository.save(exercise);
     }
 
     public void changeDislikes(OAuth2User currentUser, Exercises exercise) {
         User user = userService.getUser(currentUser);
-        Set<User> dislikes = exercise.getLikes();
-        if (dislikes.contains(user)) dislikes.remove(user);
-        else {
-            dislikes.add(user);
-            Set<User> likes = exercise.getDislikes();
-            if (likes.contains(user)) likes.remove(user);
-        }
+        if (exercise.getDislikes().add(user))
+            exercise.getLikes().remove(user);
+        else exercise.getDislikes().remove(user);
         exerciseRepository.save(exercise);
     }
 
     public boolean isLiked(OAuth2User currentUser, Long id) {
-        Exercises exercise = getExercises(id);
         User user = userService.getUser(currentUser);
-        Set<User> likes = exercise.getLikes();
-        if (likes.contains(user)) return true;
+        if (getExercises(id).getLikes().contains(user)) return true;
         return false;
     }
     public boolean isDisliked(OAuth2User currentUser, Long id) {
-        Exercises exercise = getExercises(id);
         User user = userService.getUser(currentUser);
-        Set<User> dislikes = exercise.getDislikes();
-        if (dislikes.contains(user)) return true;
+        if (getExercises(id).getDislikes().contains(user)) return true;
         return false;
     }
 
     public int likes(Long id) {
-        Exercises exercises = getExercises(id);
-        Set<User> likes = exercises.getLikes();
-        return likes.size();
+        return getExercises(id).getLikes().size();
     }
     public int dislikes(Long id) {
-        Exercises exercises = getExercises(id);
-        Set<User> dislikes = exercises.getDislikes();
-        return dislikes.size();
+        return getExercises(id).getDislikes().size();
     }
 
     private Exercises getExercises(Long id) {
@@ -131,8 +114,7 @@ public class ExercisesService {
 
     public boolean isCurrentUser(OAuth2User currentUser, Long id) {
         User user = userService.getUser(currentUser);
-        Exercises exercises = getExercises(id);
-        if (user.getId().equals(exercises.getAuthor().getId())) return true;
+        if (user.getId().equals(getExercises(id).getAuthor().getId())) return true;
         return false;
     }
 }
