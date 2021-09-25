@@ -32,9 +32,9 @@ public class User {
         return roles;
     }
 
-    /*public boolean isAdmin() {
+    public boolean isAdmin() {
         return roles.contains(Role.ADMIN);
-    }*/
+    }
 
     @Override
     public boolean equals(Object o) {

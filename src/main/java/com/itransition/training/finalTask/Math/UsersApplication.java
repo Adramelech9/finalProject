@@ -30,7 +30,6 @@ public class UsersApplication extends WebSecurityConfigurerAdapter {
 	@GetMapping("/user")
 	public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
 		userService.addUser(principal);
-
 		return Collections.singletonMap("name", principal.getAttribute("name"));
 	}
 

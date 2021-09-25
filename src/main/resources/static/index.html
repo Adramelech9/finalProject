@@ -18,11 +18,7 @@
 
 </head>
 <body>
-<a href="/language">lan</a>
-<a href="/design">design</a>
-<a href="/admin_panel">admin panel</a>
-<a href="/office">move to personal office</a>
-<a href="/exercises">exercises</a>
+<div th:insert="parts/tags :: tags"></div>
 
 <div class="container unauthenticated">
     With GitHub: <a href="/oauth2/authorization/github">click here</a><br>
@@ -31,6 +27,8 @@
 </div>
 
 <div class="container authenticated" style="display:none">
+    <div th:insert="parts/header :: header"></div>
+
     <h1>Welcome, <span id="user"></span></h1>
 
     <div>

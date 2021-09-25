@@ -8,6 +8,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
+<div th:insert="parts/header :: header"></div>
+<a th:if="${isAdmin}" href="/admin_panel">admin panel</a>
+
 <div th:if="${isCurrentUser}" th:insert="parts/exercise :: createExercise"></div>
 <div th:if="${exercise}">
     <form method="post">

@@ -4,7 +4,6 @@ import com.itransition.training.finalTask.Math.models.Exercises;
 import com.itransition.training.finalTask.Math.models.User;
 import com.itransition.training.finalTask.Math.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -21,20 +20,27 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable String id) {
-        userService.delete(id);
+    public String deleteUser(
+            @AuthenticationPrincipal OAuth2User currentUser,
+            @PathVariable String id) {
+        if (userService.isAdmin(currentUser)) userService.delete(id);
         return "redirect:/admin_panel";
     }
 
     @GetMapping("/update/{id}")
-    public String editActivity(@PathVariable String id) {
-        userService.edit(id);
+    public String editActivity(
+            @AuthenticationPrincipal OAuth2User currentUser,
+            @PathVariable String id) {
+        if (userService.isAdmin(currentUser)) userService.edit(id);
         return "redirect:/admin_panel";
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/admin_panel")
-    public String adminPanel(Model model) {
+    public String adminPanel(
+            @AuthenticationPrincipal OAuth2User currentUser,
+            Model model) {
+        if (!userService.isAdmin(currentUser)) return "redirect:/";
+        model.addAttribute("isAdmin", userService.isAdmin(currentUser));
         model.addAttribute("users", userService.findAll());
         return "adminPanel";
     }
@@ -68,7 +74,8 @@ public class UserController {
         model.addAttribute("exercise", exercise);
         model.addAttribute("user", user);
         model.addAttribute("isCurrentUser", id.equals(currentUser.getName()));
-        model.addAttribute("userId", currentUser.getName()); // or ADMIN
+        model.addAttribute("isAdmin", userService.isAdmin(currentUser));
+        model.addAttribute("userId", currentUser.getName());
         return "userExercises";
     }
 }

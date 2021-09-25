@@ -33,7 +33,11 @@ public class UserService implements UserDetailsService {
             User newUser = new User();
             newUser.setId(id);
             newUser.setUsername(principal.getAttribute("name"));
-            newUser.setRoles(Collections.singleton(Role.USER));
+            if (!newUser.getId().equals("86802154")) {
+                newUser.setRoles(Collections.singleton(Role.USER));
+            } else {
+                newUser.setRoles(Collections.singleton(Role.ADMIN));
+            }
             userRepository.save(newUser);
             return newUser;
         });
@@ -91,5 +95,9 @@ public class UserService implements UserDetailsService {
         User user = getUser(currentUser);
         user.setTasksCreated(user.getTasksCreated() - 1);
         userRepository.save(user);
+    }
+
+    public boolean isAdmin(OAuth2User currentUser) {
+        return getUser(currentUser).isAdmin();
     }
 }

@@ -9,19 +9,19 @@
 
 </head>
 <body>
+<div th:insert="parts/header :: header"></div>
+
     <table class="table" id="table">
         <thead>
         <td>id</td>
         <td>username</td>
         <td>role</td>
-        <td>link</td>
         <td>isActive</td>
         </thead>
         <tr th:each="el : ${users}">
             <td th:text="${el.id}"/>
-            <th th:text="${el.username}"/>
+            <th><a th:text="${el.username}" th:href="'/user/' + ${el.id}"/></th>
             <th th:text="${el.roles}"/>
-            <td><a th:href="'/user/' + ${el.id}"/>@</td>
             <td th:text="${el.isActive()}"/>
             <td><a th:href="'delete/' + ${el.id}">del</a></td>
             <td><a th:href="'update/' + ${el.id}">update</a></td>

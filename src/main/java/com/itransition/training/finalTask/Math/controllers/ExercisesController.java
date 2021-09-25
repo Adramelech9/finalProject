@@ -80,8 +80,11 @@ public class ExercisesController {
         if (!exercisesService.exists(id)) return "redirect:/exercises";
         ArrayList<Exercises> res = exercisesService.detailExercise(id);
         model.addAttribute("exercises", res);
+        model.addAttribute("likes", exercisesService.likes(id));
+        model.addAttribute("dislikes", exercisesService.dislikes(id));
         model.addAttribute("like", exercisesService.isLiked(currentUser, id));
         model.addAttribute("dislike", exercisesService.isDisliked(currentUser, id));
+        model.addAttribute("isCurrentUser", exercisesService.isCurrentUser(currentUser, id));
         return "theExercise";
     }
 

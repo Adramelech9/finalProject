@@ -1,5 +1,6 @@
 package com.itransition.training.finalTask.Math.services;
 
+import com.itransition.training.finalTask.Math.UsersApplication;
 import com.itransition.training.finalTask.Math.models.Exercises;
 import com.itransition.training.finalTask.Math.models.User;
 import com.itransition.training.finalTask.Math.repository.ExerciseRepository;
@@ -49,9 +50,9 @@ public class ExercisesService {
 
     public void delete(OAuth2User currentUser, Long id) {
         userService.removeTask(currentUser);
-        Exercises e = exerciseRepository.findById(id).orElseThrow();
-        if (currentUser.getName().equals(e.getAuthor().getId()))
-            exerciseRepository.delete(e);
+        Exercises exercises = getExercises(id);
+        if (currentUser.getName().equals(exercises.getAuthor().getId()))
+            exerciseRepository.delete(exercises);
     }
 
     public Long CreateExercises(String name, String condition, String theme, String tags, String images, String rightAnswers, OAuth2User currentUser) {
@@ -99,17 +100,39 @@ public class ExercisesService {
     }
 
     public boolean isLiked(OAuth2User currentUser, Long id) {
-        Exercises exercise = exerciseRepository.findById(id).orElseThrow();
+        Exercises exercise = getExercises(id);
         User user = userService.getUser(currentUser);
         Set<User> likes = exercise.getLikes();
         if (likes.contains(user)) return true;
         return false;
     }
     public boolean isDisliked(OAuth2User currentUser, Long id) {
-        Exercises exercise = exerciseRepository.findById(id).orElseThrow();
+        Exercises exercise = getExercises(id);
         User user = userService.getUser(currentUser);
         Set<User> dislikes = exercise.getDislikes();
         if (dislikes.contains(user)) return true;
+        return false;
+    }
+
+    public int likes(Long id) {
+        Exercises exercises = getExercises(id);
+        Set<User> likes = exercises.getLikes();
+        return likes.size();
+    }
+    public int dislikes(Long id) {
+        Exercises exercises = getExercises(id);
+        Set<User> dislikes = exercises.getDislikes();
+        return dislikes.size();
+    }
+
+    private Exercises getExercises(Long id) {
+        return exerciseRepository.findById(id).orElseThrow();
+    }
+
+    public boolean isCurrentUser(OAuth2User currentUser, Long id) {
+        User user = userService.getUser(currentUser);
+        Exercises exercises = getExercises(id);
+        if (user.getId().equals(exercises.getAuthor().getId())) return true;
         return false;
     }
 }
