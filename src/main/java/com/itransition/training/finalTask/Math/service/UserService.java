@@ -1,7 +1,7 @@
-package com.itransition.training.finalTask.Math.services;
+package com.itransition.training.finalTask.Math.service;
 
-import com.itransition.training.finalTask.Math.models.Role;
-import com.itransition.training.finalTask.Math.models.User;
+import com.itransition.training.finalTask.Math.model.Role;
+import com.itransition.training.finalTask.Math.model.User;
 import com.itransition.training.finalTask.Math.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

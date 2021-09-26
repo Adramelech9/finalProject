@@ -1,4 +1,4 @@
-package com.itransition.training.finalTask.Math.models;
+package com.itransition.training.finalTask.Math.model;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -140,4 +140,5 @@ public class User {
     public void setDislikes(Set<Exercises> dislikes) {
         this.dislikes = dislikes;
     }
+
 }

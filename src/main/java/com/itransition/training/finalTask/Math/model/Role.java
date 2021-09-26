@@ -1,4 +1,4 @@
-package com.itransition.training.finalTask.Math.models;
+package com.itransition.training.finalTask.Math.model;
 
 import org.springframework.security.core.GrantedAuthority;
 

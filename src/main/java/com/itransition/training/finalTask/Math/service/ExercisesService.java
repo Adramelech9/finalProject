@@ -1,17 +1,14 @@
-package com.itransition.training.finalTask.Math.services;
+package com.itransition.training.finalTask.Math.service;
 
-import com.itransition.training.finalTask.Math.UsersApplication;
-import com.itransition.training.finalTask.Math.models.Exercises;
-import com.itransition.training.finalTask.Math.models.User;
+import com.itransition.training.finalTask.Math.model.Exercises;
+import com.itransition.training.finalTask.Math.model.User;
 import com.itransition.training.finalTask.Math.repository.ExerciseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class ExercisesService {
@@ -19,12 +16,16 @@ public class ExercisesService {
     private ExerciseRepository exerciseRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private RatingService ratingService;
 
     public Iterable<Exercises> findAll() {
         return exerciseRepository.findAll();
     }
 
-    public void updateExercise(OAuth2User currentUser, Exercises e, String name, String condition, String theme, String tags, String images, String rightAnswers) {
+    public void updateExercise(OAuth2User currentUser, Exercises e, String name,
+                               String condition, String theme, String tags,
+                               String images, String rightAnswers) {
         if (e.getAuthor().getId().equals(currentUser.getName())) {
 
             if (name != null) {
@@ -116,5 +117,17 @@ public class ExercisesService {
         User user = userService.getUser(currentUser);
         if (user.getId().equals(getExercises(id).getAuthor().getId())) return true;
         return false;
+    }
+
+    public double rating(Long id) {
+        Exercises exercises = exerciseRepository.findById(id).orElseThrow();
+        exercises.setRating(ratingService.averageRating(exercises));
+        exerciseRepository.save(exercises);
+        return ratingService.averageRating(exercises);
+    }
+
+    public boolean isVoted(OAuth2User currentUser, Long id) {
+        Exercises exercises = exerciseRepository.findById(id).orElseThrow();
+        return ratingService.isVoted(currentUser, exercises);
     }
 }

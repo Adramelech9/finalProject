@@ -1,6 +1,6 @@
-package com.itransition.training.finalTask.Math.models.util;
+package com.itransition.training.finalTask.Math.model.util;
 
-import com.itransition.training.finalTask.Math.models.User;
+import com.itransition.training.finalTask.Math.model.User;
 
 public class ExercisesHelper {
     public static String getAuthorName(User author) {

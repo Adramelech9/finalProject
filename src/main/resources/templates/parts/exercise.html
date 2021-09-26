@@ -27,6 +27,7 @@
             <!--<div>
                 <img th:src="@{/img/{filename}(filename = ${el.images})}">
             </div> -->
+            <a th:text="${el.rating}"></a><i class="far fa-star"></i><br>
             <p th:text="${el.name}"/>
             <p th:text="${el.theme}"/>
             <p th:text="${el.tags}"/>
@@ -35,7 +36,8 @@
             <a th:href="'/exercises/' + ${el.id}" class="btn btn-warning">details</a><br>
             <a th:href="'/office/' + ${el.author.id} + '?exercise=' + ${el.id}"
                th:if="${userId == el.author.id}">edit</a></td>
-            <a th:href="'/exercises/' + ${el.id} + '/delete'" th:if="${userId == el.author.id}">delete</a>
+            <a th:href="'/exercises/' + ${el.id} + '/delete'"
+               th:if="${userId == el.author.id}">delete</a><br>
 
         </div>
     </div>

@@ -1,6 +1,6 @@
-package com.itransition.training.finalTask.Math.models;
+package com.itransition.training.finalTask.Math.model;
 
-import com.itransition.training.finalTask.Math.models.util.ExercisesHelper;
+import com.itransition.training.finalTask.Math.model.util.ExercisesHelper;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -15,12 +15,13 @@ public class Exercises {
     @NotBlank(message = "The field cannot be empty")
     private String name, condition, theme, rightAnswers;
     private String tags, images;
-    //private int sumRating, numOfVotes;
-    //private int likes, dislikes;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;
+
+    @OneToMany(mappedBy = "idExercises", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Rating> ratings;
 
     @ManyToMany
     @JoinTable(
@@ -38,13 +39,7 @@ public class Exercises {
     )
     private Set<User> dislikes = new HashSet<>();
 
-    /*@ManyToMany
-    @JoinTable(
-            name = "rating",
-            joinColumns = { @JoinColumn(name = "exercise_id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id")}
-    )
-    private Set<User> rating = new HashSet<>();*/
+    private double rating;
 
     public String getAuthorName() {
         return ExercisesHelper.getAuthorName(author);
@@ -144,4 +139,19 @@ public class Exercises {
         this.dislikes = dislikes;
     }
 
+    public Set<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(Set<Rating> ratings) {
+        this.ratings = ratings;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
 }

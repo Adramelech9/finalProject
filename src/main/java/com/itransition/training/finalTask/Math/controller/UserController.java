@@ -1,8 +1,8 @@
-package com.itransition.training.finalTask.Math.controllers;
+package com.itransition.training.finalTask.Math.controller;
 
-import com.itransition.training.finalTask.Math.models.Exercises;
-import com.itransition.training.finalTask.Math.models.User;
-import com.itransition.training.finalTask.Math.services.UserService;
+import com.itransition.training.finalTask.Math.model.Exercises;
+import com.itransition.training.finalTask.Math.model.User;
+import com.itransition.training.finalTask.Math.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.persistence.EntityManager;
 import java.util.Set;
 
 @Controller
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private EntityManager em;
 
     @GetMapping("/delete/{id}")
     public String deleteUser(

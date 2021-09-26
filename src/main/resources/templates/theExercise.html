@@ -14,7 +14,15 @@
 
 <div class="container mt-5">
     <div th:each="el : ${exercises}" class="alert alert-info mt-2">
-        <h3 th:text="${el.name}"/>
+        <a th:text="${rating}"></a><i class="far fa-star"></i><br>
+        <div th:if="${!isVoted}">
+            <a th:href="'/exercises/' + ${el.id} +'/rating/1'">1</a>
+            <a th:href="'/exercises/' + ${el.id} +'/rating/2'">2</a>
+            <a th:href="'/exercises/' + ${el.id} +'/rating/3'">3</a>
+            <a th:href="'/exercises/' + ${el.id} +'/rating/4'">4</a>
+            <a th:href="'/exercises/' + ${el.id} +'/rating/5'">5</a>
+        </div>
+        <h th:text="${el.name}"/>
         <p th:text="${el.theme}"/>
         <p th:text="${el.tags}"/>
         <p th:text="${el.condition}"/>
@@ -36,8 +44,6 @@
         th:if="${isCurrentUser}">edit</a></td>
         <a th:href="'/exercises/' + ${el.id} + '/delete'"
            th:if="${isCurrentUser}">delete</a>
-
-
     </div>
 </div>
 

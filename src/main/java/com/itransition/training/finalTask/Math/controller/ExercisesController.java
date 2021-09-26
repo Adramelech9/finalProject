@@ -1,7 +1,7 @@
-package com.itransition.training.finalTask.Math.controllers;
+package com.itransition.training.finalTask.Math.controller;
 
-import com.itransition.training.finalTask.Math.models.Exercises;
-import com.itransition.training.finalTask.Math.services.ExercisesService;
+import com.itransition.training.finalTask.Math.model.Exercises;
+import com.itransition.training.finalTask.Math.service.ExercisesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -81,8 +81,10 @@ public class ExercisesController {
         ArrayList<Exercises> res = exercisesService.detailExercise(id);
         model.addAttribute("exercises", res);
         model.addAttribute("likes", exercisesService.likes(id));
+        model.addAttribute("rating", exercisesService.rating(id));
         model.addAttribute("dislikes", exercisesService.dislikes(id));
         model.addAttribute("like", exercisesService.isLiked(currentUser, id));
+        model.addAttribute("isVoted", exercisesService.isVoted(currentUser, id));
         model.addAttribute("dislike", exercisesService.isDisliked(currentUser, id));
         model.addAttribute("isCurrentUser", exercisesService.isCurrentUser(currentUser, id));
         return "theExercise";

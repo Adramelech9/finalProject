@@ -1,6 +1,6 @@
 package com.itransition.training.finalTask.Math;
 
-import com.itransition.training.finalTask.Math.services.UserService;
+import com.itransition.training.finalTask.Math.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
