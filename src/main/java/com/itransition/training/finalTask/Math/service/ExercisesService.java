@@ -1,6 +1,7 @@
 package com.itransition.training.finalTask.Math.service;
 
 import com.itransition.training.finalTask.Math.model.Exercises;
+import com.itransition.training.finalTask.Math.model.Tags;
 import com.itransition.training.finalTask.Math.model.User;
 import com.itransition.training.finalTask.Math.repository.ExerciseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ public class ExercisesService {
     private UserService userService;
     @Autowired
     private RatingService ratingService;
+    @Autowired
+    private TagsService tagsService;
 
     public Iterable<Exercises> findAll() {
         return exerciseRepository.findAll();
@@ -60,6 +63,7 @@ public class ExercisesService {
         User user = userService.addTask(currentUser);
         Exercises exercises = new Exercises(name, condition, theme, tags, images, rightAnswers, user);
         exerciseRepository.save(exercises);
+        tagsService.addTags(tags);
         return exercises.getId();
     }
 
@@ -129,5 +133,9 @@ public class ExercisesService {
     public boolean isVoted(OAuth2User currentUser, Long id) {
         Exercises exercises = exerciseRepository.findById(id).orElseThrow();
         return ratingService.isVoted(currentUser, exercises);
+    }
+
+    public Iterable<Tags> getTags() {
+        return tagsService.getTags();
     }
 }

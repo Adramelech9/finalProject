@@ -13,7 +13,7 @@ public class Rating {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User idUser;
-    private int sumRating; //numOfVotes
+    private int sumRating;
 
     public Rating() {
     }

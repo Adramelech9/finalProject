@@ -22,6 +22,7 @@ public class ExercisesController {
     @GetMapping("/")
     public String authPage(Model model) {
         model.addAttribute("exercises", exercisesService.findAll());
+        model.addAttribute("tags", exercisesService.getTags());
         return "../static/index";
     }
 
@@ -31,6 +32,7 @@ public class ExercisesController {
             Model model) {
         model.addAttribute("exercises", exercisesService.findAll());
         model.addAttribute("userId", currentUser.getName());
+        model.addAttribute("tags", exercisesService.getTags());
         return "exercisesMain";
     }
 
