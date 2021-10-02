@@ -12,15 +12,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.persistence.EntityManager;
 import java.util.Set;
 
 @Controller
 public class UserController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private EntityManager em;
 
     @GetMapping("/delete/{id}")
     public String deleteUser(

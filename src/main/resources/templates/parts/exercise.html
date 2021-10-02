@@ -3,7 +3,13 @@
         <div class="card card-body alert-info mt-2">
             <form action="/exercises" method="post">
                 <input type="text" name="name" placeholder="name"/><br>
-                <input type="text" name="theme" placeholder="theme"/>
+                    <select name="theme">
+                        <option selected="selected">theme..</option>
+                        <option>Geometry</option>
+                        <option>Algebra</option>
+                        <option>Number theory</option>
+                        <option>Java</option>
+                    </select>
                 <input type="text" name="tags" placeholder="tags"/><br>
                 <textarea type="text" name="condition" placeholder="condition"></textarea><br>
                 <input type="text" name="images" placeholder="images"/><br>
@@ -35,10 +41,9 @@
             <a th:href="'/office/' + ${el.author.id}" th:text="${el.authorName}"></a><br>
             <a th:href="'/exercises/' + ${el.id}" class="btn btn-warning">details</a><br>
             <a th:href="'/office/' + ${el.author.id} + '?exercise=' + ${el.id}"
-               th:if="${userId == el.author.id}">edit</a></td>
+               th:if="${userId == el.author.id} or ${isAdmin}">edit</a></td>
             <a th:href="'/exercises/' + ${el.id} + '/delete'"
-               th:if="${userId == el.author.id}">delete</a><br>
-
+               th:if="${userId == el.author.id} or ${isAdmin}">delete</a><br>
         </div>
     </div>
 </div>

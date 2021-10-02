@@ -33,6 +33,7 @@ public class ExercisesController {
         model.addAttribute("exercises", exercisesService.findAll());
         model.addAttribute("userId", currentUser.getName());
         model.addAttribute("tags", exercisesService.getTags());
+        model.addAttribute("isAdmin", exercisesService.isAdmin(currentUser));
         return "exercisesMain";
     }
 
@@ -85,10 +86,22 @@ public class ExercisesController {
         model.addAttribute("likes", exercisesService.likes(id));
         model.addAttribute("rating", exercisesService.rating(id));
         model.addAttribute("dislikes", exercisesService.dislikes(id));
-        model.addAttribute("like", exercisesService.isLiked(currentUser, id));
-        model.addAttribute("isVoted", exercisesService.isVoted(currentUser, id));
-        model.addAttribute("dislike", exercisesService.isDisliked(currentUser, id));
-        model.addAttribute("isCurrentUser", exercisesService.isCurrentUser(currentUser, id));
+        model.addAttribute("comment", exercisesService.allComment(id));
+        if (currentUser != null) {
+            model.addAttribute("like", exercisesService.isLiked(currentUser, id));
+            model.addAttribute("isVoted", exercisesService.isVoted(currentUser, id));
+            model.addAttribute("dislike", exercisesService.isDisliked(currentUser, id));
+            model.addAttribute("isCurrentUser", exercisesService.isCurrentUser(currentUser, id));
+            model.addAttribute("read_only", false);
+            model.addAttribute("answer", exercisesService.getAnswer(currentUser, id));
+            model.addAttribute("isRightAnswers", exercisesService.isRightAnswers(currentUser, id));
+            model.addAttribute("isAdmin", exercisesService.isAdmin(currentUser));
+        } else {
+            model.addAttribute("isVoted", true);
+            model.addAttribute("read_only", true);
+            model.addAttribute("answer", "");
+            model.addAttribute("isRightAnswers", true);
+        }
         return "theExercise";
     }
 

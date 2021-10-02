@@ -15,7 +15,13 @@
 <div th:if="${exercise}">
     <form method="post">
         <input type="text" name="name" placeholder="name" th:value="${exercise.name}"/><br>
-        <input type="text" name="theme" placeholder="theme" th:value="${exercise.theme}"/><br>
+        <select name="theme">
+            <option selected="selected">[[${exercise.theme}]]</option>
+            <option>Geometry</option>
+            <option>Algebra</option>
+            <option>Number theory</option>
+            <option>Java</option>
+        </select>
         <input type="text" name="tags" placeholder="tags" th:value="${exercise.tags}"/><br>
         <textarea type="text" name="condition" placeholder="condition">[[${exercise.condition}]]</textarea><br>
         <input type="text" name="images" placeholder="images" th:value="${exercise.images}"/><br>
@@ -26,8 +32,9 @@
 </div>
 <div>
     <h1>personal achievements</h1>
+    [[${exercise.authorName}]]
     <p><b>Tasks created: </b><span th:text="${user.getTasksCreated()}"/></p>
-    <p><b>Solved problems: </b><span text="in development"/></p>
+    <p><b>Solved problems: </b><span th:text="'in development'"/></p>
 </div>
     <table class="table" id="table">
         <thead>
@@ -42,11 +49,11 @@
             <th th:text="${el.tags}"/>
             <td><a th:href="'/exercises/' + ${el.id}"/>link</td>
 
-            <td th:if="${userId == el.author.id}">
+            <td th:if="${userId == el.author.id} or ${isAdmin}">
                 <a th:href="'/office/' + ${el.author.id} + '?exercise=' + ${el.id}">
                     edit
                 </a></td>
-            <td th:if="${userId == el.author.id}">
+            <td th:if="${userId == el.author.id} or ${isAdmin}">
                 <a th:href="'/exercises/' + ${el.id} + '/delete'">del</a></td>
 
         </tr>

@@ -10,8 +10,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div th:insert="parts/header :: header"></div>
-
+<div th:if="${!read_only}" th:insert="parts/header :: header"></div>
+<a href="/">Main</a>
 <div class="container mt-5">
     <div th:each="el : ${exercises}" class="alert alert-info mt-2">
         <a th:text="${rating}"></a><i class="far fa-star"></i><br>
@@ -27,9 +27,9 @@
         <p th:text="${el.tags}"/>
         <p th:text="${el.condition}"/>
         <p th:text="${el.images}"/>
-        <p th:text="${el.rightAnswers}"/>
         <b>Author: </b>
         <a th:href="'/office/' + ${el.author.id}" th:text="${el.authorName}"></a><br>
+        <div th:if="${!read_only}">
         <a th:href="'/exercises/' + ${el.id} +'/like'">
             <i th:text="${likes}"/>
             <i th:if="${like}" class="fas fa-thumbs-up"></i>
@@ -41,9 +41,33 @@
             <i th:if="${!dislike}"  class="far fa-thumbs-down"></i>
         </a><br>
         <a th:href="'/office/' + ${el.author.id} + '?exercise=' + ${el.id}"
-        th:if="${isCurrentUser}">edit</a></td>
+        th:if="${isCurrentUser} or ${isAdmin}">edit</a></td>
         <a th:href="'/exercises/' + ${el.id} + '/delete'"
-           th:if="${isCurrentUser}">delete</a>
+           th:if="${isCurrentUser} or ${isAdmin}">delete</a>
+
+            <form th:if="${!isRightAnswers}" th:action="'/exercises/' + ${el.id} + '/answer'" method="post">
+                <input name="answer" placeholder="your answer..">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/><br>
+                <button type="submit">Verity</button>
+            </form>
+
+        </div>
+        <div th:if="${!read_only}">
+            <p th:if="${!isRightAnswers} and ${answer} != 'your answer..'">
+                [[${answer}]] isn`t right
+            </p>
+            <p th:if="${isRightAnswers}">[[${answer}]] is right</p>
+        </div>
+        <form th:if="${!read_only}" method="post"
+              th:action="'/exercises/' + ${el.id} + '/comment'">
+            <input name="comment" placeholder="your comment..">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/><br>
+            <button type="submit">Add comment</button>
+        </form>
+    </div>
+    <div th:each="el : ${comment}" class="alert alert-info mt-2">
+        <p th:text="${el.text}"/>
+        <b>Author: </b><p th:text="${el.idCommentUser.username}"/>
     </div>
 </div>
 

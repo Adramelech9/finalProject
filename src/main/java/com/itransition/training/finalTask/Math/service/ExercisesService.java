@@ -1,5 +1,6 @@
 package com.itransition.training.finalTask.Math.service;
 
+import com.itransition.training.finalTask.Math.model.Comment;
 import com.itransition.training.finalTask.Math.model.Exercises;
 import com.itransition.training.finalTask.Math.model.Tags;
 import com.itransition.training.finalTask.Math.model.User;
@@ -21,6 +22,10 @@ public class ExercisesService {
     private RatingService ratingService;
     @Autowired
     private TagsService tagsService;
+    @Autowired
+    private UserAnswerService userAnswerService;
+    @Autowired
+    private CommentService commentService;
 
     public Iterable<Exercises> findAll() {
         return exerciseRepository.findAll();
@@ -29,33 +34,22 @@ public class ExercisesService {
     public void updateExercise(OAuth2User currentUser, Exercises e, String name,
                                String condition, String theme, String tags,
                                String images, String rightAnswers) {
-        if (e.getAuthor().getId().equals(currentUser.getName())) {
+        if (e.getAuthor().getId().equals(currentUser.getName()) || userService.isAdmin(currentUser)) {
+            e.setName(name);
+            e.setCondition(condition);
+            e.setTheme(theme);
+            e.setTags(tags);
+            e.setImages(images);
+            e.setRightAnswers(rightAnswers);
 
-            if (name != null) {
-                e.setName(name);
-            }
-            if (condition != null) {
-                e.setCondition(condition);
-            }
-            if (theme != null) {
-                e.setTheme(theme);
-            }
-            if (tags != null) {
-                e.setTags(tags);
-            }
-            if (images != null) {
-                e.setImages(images);
-            }
-            if (rightAnswers != null) {
-                e.setRightAnswers(rightAnswers);
-            }
             exerciseRepository.save(e);
         }
     }
 
     public void delete(OAuth2User currentUser, Long id) {
         userService.removeTask(currentUser);
-        if (currentUser.getName().equals(getExercises(id).getAuthor().getId()))
+        if (currentUser.getName().equals(getExercises(id).getAuthor().getId())
+                || userService.isAdmin(currentUser))
             exerciseRepository.delete(getExercises(id));
     }
 
@@ -137,5 +131,25 @@ public class ExercisesService {
 
     public Iterable<Tags> getTags() {
         return tagsService.getTags();
+    }
+
+    public boolean isRightAnswers(OAuth2User currentUser, Long id) {
+        Exercises exercises = exerciseRepository.findById(id).orElseThrow();
+        return userAnswerService.isRightAnswers(
+                currentUser, exercises, exercises.getRightAnswers());
+    }
+
+    public String getAnswer(OAuth2User currentUser, Long id) {
+        Exercises exercises = exerciseRepository.findById(id).orElseThrow();
+        return userAnswerService.getUserAnswer(currentUser, exercises);
+    }
+
+    public Iterable<Comment> allComment(Long id) {
+        Exercises exercises = exerciseRepository.findById(id).orElseThrow();
+        return commentService.allComment(exercises);
+    }
+
+    public boolean isAdmin(OAuth2User currentUser) {
+        return userService.isAdmin(currentUser);
     }
 }
