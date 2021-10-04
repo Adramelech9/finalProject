@@ -10,7 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Set;
 
@@ -40,20 +44,34 @@ public class UserController {
             @AuthenticationPrincipal OAuth2User currentUser,
             Model model) {
         if (!userService.isAdmin(currentUser)) return "redirect:/";
+        User user = userService.getUser(currentUser);
+        model.addAttribute("design", user.getDesign());
         model.addAttribute("isAdmin", userService.isAdmin(currentUser));
         model.addAttribute("users", userService.findAll());
         return "adminPanel";
     }
     @GetMapping("/design")
-    public String updateDesign(@AuthenticationPrincipal OAuth2User currentUser) {
+    public String updateDesign(
+            @AuthenticationPrincipal OAuth2User currentUser,
+            RedirectAttributes attributes,
+            @RequestHeader(required = false) String referer) {
         userService.updateDesign(currentUser);
-        return "redirect:/";
+        UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();
+        components.getQueryParams().entrySet()
+                .forEach(pair -> attributes.addAttribute(pair.getKey(), pair.getValue()));
+        return "redirect:" + components.getPath();
     }
 
     @GetMapping("/language")
-    public String updateLanguage(@AuthenticationPrincipal OAuth2User currentUser) {
+    public String updateLanguage(
+            @AuthenticationPrincipal OAuth2User currentUser,
+            RedirectAttributes attributes,
+            @RequestHeader(required = false) String referer) {
         userService.updateLanguage(currentUser);
-        return "redirect:/";
+        UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();
+        components.getQueryParams().entrySet()
+                .forEach(pair -> attributes.addAttribute(pair.getKey(), pair.getValue()));
+        return "redirect:" + components.getPath();
     }
 
     @GetMapping("/office")

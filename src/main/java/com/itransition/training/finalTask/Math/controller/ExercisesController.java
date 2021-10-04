@@ -1,16 +1,17 @@
 package com.itransition.training.finalTask.Math.controller;
 
 import com.itransition.training.finalTask.Math.model.Exercises;
+import com.itransition.training.finalTask.Math.model.User;
 import com.itransition.training.finalTask.Math.service.ExercisesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,8 @@ public class ExercisesController {
     public String exercises(
             @AuthenticationPrincipal OAuth2User currentUser,
             Model model) {
+        User user = exercisesService.user(currentUser);
+        model.addAttribute("design", user.getDesign());
         model.addAttribute("exercises", exercisesService.findAll());
         model.addAttribute("userId", currentUser.getName());
         model.addAttribute("tags", exercisesService.getTags());
@@ -37,9 +40,10 @@ public class ExercisesController {
         return "exercisesMain";
     }
 
-    @PostMapping("/exercises")
+    @PostMapping("/office/{idUser}/creat")
     public String CreateExercises(
             @AuthenticationPrincipal OAuth2User currentUser,
+            @PathVariable(required = false) String idUser,
             @RequestParam String name,
             @RequestParam String condition,
             @RequestParam String theme,
@@ -47,7 +51,9 @@ public class ExercisesController {
             @RequestParam String images,
             @RequestParam String rightAnswers,
             Model model) {
-        Long id = exercisesService.CreateExercises(name, condition, theme, tags, images, rightAnswers, currentUser);
+        Long id = exercisesService.CreateExercises(
+                name, condition, theme, tags, images,
+                rightAnswers, currentUser, idUser);
         model.addAttribute("exercises", exercisesService.findAll());
         return "redirect:/exercises/" + id;
     }
@@ -96,11 +102,14 @@ public class ExercisesController {
             model.addAttribute("answer", exercisesService.getAnswer(currentUser, id));
             model.addAttribute("isRightAnswers", exercisesService.isRightAnswers(currentUser, id));
             model.addAttribute("isAdmin", exercisesService.isAdmin(currentUser));
+            model.addAttribute("user", exercisesService.user(currentUser));
+            model.addAttribute("design", exercisesService.user(currentUser).getDesign());
+
         } else {
             model.addAttribute("isVoted", true);
             model.addAttribute("read_only", true);
-            model.addAttribute("answer", "");
-            model.addAttribute("isRightAnswers", true);
+            model.addAttribute("design", "standard");
+
         }
         return "theExercise";
     }
@@ -108,26 +117,16 @@ public class ExercisesController {
     @GetMapping("/exercises/{exercise}/like")
     public String changeLikes(
             @AuthenticationPrincipal OAuth2User currentUser,
-            @PathVariable Exercises exercise,
-            RedirectAttributes attributes,
-            @RequestHeader(required = false) String referer) {
+            @PathVariable Exercises exercise) {
         exercisesService.changeLikes(currentUser, exercise);
-        UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();
-        components.getQueryParams().entrySet()
-            .forEach(pair -> attributes.addAttribute(pair.getKey(), pair.getValue()));
-        return "redirect:" + components.getPath();
+        return "redirect:/exercises/{exercise}";
     }
 
     @GetMapping("/exercises/{exercise}/dislike")
     public String changeDislikes(
             @AuthenticationPrincipal OAuth2User currentUser,
-            @PathVariable Exercises exercise,
-            RedirectAttributes attributes,
-            @RequestHeader(required = false) String referer) {
+            @PathVariable Exercises exercise) {
         exercisesService.changeDislikes(currentUser, exercise);
-        UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();
-        components.getQueryParams().entrySet()
-                .forEach(pair -> attributes.addAttribute(pair.getKey(), pair.getValue()));
-        return "redirect:" + components.getPath();
+        return "redirect:/exercises/{exercise}";
     }
 }

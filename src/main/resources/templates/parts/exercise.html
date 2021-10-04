@@ -1,7 +1,7 @@
 <div th:fragment="createExercise">
     <div class="collapse" id="collapseExample">
         <div class="card card-body alert-info mt-2">
-            <form action="/exercises" method="post">
+            <form th:action="'/office/' + ${user.getId()} + '/creat'" method="post">
                 <input type="text" name="name" placeholder="name"/><br>
                     <select name="theme">
                         <option selected="selected">theme..</option>

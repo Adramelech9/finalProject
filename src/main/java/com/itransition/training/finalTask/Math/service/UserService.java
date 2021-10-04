@@ -33,10 +33,10 @@ public class UserService implements UserDetailsService {
             User newUser = new User();
             newUser.setId(id);
             newUser.setUsername(principal.getAttribute("name"));
-            if (!newUser.getId().equals("86802154")) {
-                newUser.setRoles(Collections.singleton(Role.USER));
-            } else {
+            if (newUser.getId().equals("86802154")) {
                 newUser.setRoles(Collections.singleton(Role.ADMIN));
+            } else {
+                newUser.setRoles(Collections.singleton(Role.USER));
             }
             userRepository.save(newUser);
             return newUser;

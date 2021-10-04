@@ -1,6 +1,8 @@
 package com.itransition.training.finalTask.Math.model;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Comment {
@@ -14,6 +16,22 @@ public class Comment {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User idCommentUser;
+
+    @ManyToMany
+    @JoinTable(
+            name = "comment_likes",
+            joinColumns = {@JoinColumn(name = "exercise_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private Set<User> commentLikes = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "comment_dislikes",
+            joinColumns = {@JoinColumn(name = "exercise_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private Set<User> commentDislikes = new HashSet<>();
 
     public Comment() {
     }
@@ -54,5 +72,21 @@ public class Comment {
 
     public void setIdCommentUser(User idCommentUser) {
         this.idCommentUser = idCommentUser;
+    }
+
+    public Set<User> getCommentLikes() {
+        return commentLikes;
+    }
+
+    public void setCommentLikes(Set<User> commentLikes) {
+        this.commentLikes = commentLikes;
+    }
+
+    public Set<User> getCommentDislikes() {
+        return commentDislikes;
+    }
+
+    public void setCommentDislikes(Set<User> commentDislikes) {
+        this.commentDislikes = commentDislikes;
     }
 }

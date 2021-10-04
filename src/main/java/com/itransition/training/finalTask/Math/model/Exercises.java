@@ -5,6 +5,7 @@ import com.itransition.training.finalTask.Math.model.util.ExercisesHelper;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,6 +20,10 @@ public class Exercises {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;
+
+    @OneToMany(mappedBy = "idCommentExercise", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments;
+
 
     @OneToMany(mappedBy = "idExercises", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Rating> ratings;
@@ -153,5 +158,13 @@ public class Exercises {
 
     public void setRating(double rating) {
         this.rating = rating;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

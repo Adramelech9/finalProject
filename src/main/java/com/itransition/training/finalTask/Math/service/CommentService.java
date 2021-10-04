@@ -23,4 +23,20 @@ public class CommentService {
     public Iterable<Comment> allComment(Exercises exercises) {
         return commentRepository.findByIdCommentExercise(exercises);
     }
+
+    public void changeCommentLikes(OAuth2User currentUser, Comment comment) {
+        User user = userService.getUser(currentUser);
+        if (comment.getCommentLikes().add(user))
+            comment.getCommentDislikes().remove(user);
+        else comment.getCommentLikes().remove(user);
+        commentRepository.save(comment);
+    }
+
+    public void changeCommentDislikes(OAuth2User currentUser, Comment comment) {
+        User user = userService.getUser(currentUser);
+        if (comment.getCommentDislikes().add(user))
+            comment.getCommentLikes().remove(user);
+        else comment.getCommentDislikes().remove(user);
+        commentRepository.save(comment);
+    }
 }

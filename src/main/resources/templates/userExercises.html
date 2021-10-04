@@ -6,12 +6,17 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <style th:if="${user.getDesign()} != 'standard'">
+        body {
+            background-color: darkgrey;
+        }
+    </style>
 </head>
 <body>
 <div th:insert="parts/header :: header"></div>
 <a th:if="${isAdmin}" href="/admin_panel">admin panel</a>
 
-<div th:if="${isCurrentUser}" th:insert="parts/exercise :: createExercise"></div>
+<div th:if="${isCurrentUser} or ${isAdmin}" th:insert="parts/exercise :: createExercise"></div>
 <div th:if="${exercise}">
     <form method="post">
         <input type="text" name="name" placeholder="name" th:value="${exercise.name}"/><br>
@@ -32,7 +37,7 @@
 </div>
 <div>
     <h1>personal achievements</h1>
-    [[${exercise.authorName}]]
+    [[${user.getUsername()}]]
     <p><b>Tasks created: </b><span th:text="${user.getTasksCreated()}"/></p>
     <p><b>Solved problems: </b><span th:text="'in development'"/></p>
 </div>
@@ -41,7 +46,6 @@
             <td>name</td>
             <td>theme</td>
             <td>tags</td>
-            <td>link</td>
         </thead>
         <tr th:each="el : ${exercises}">
             <th th:text="${el.name}"/>
@@ -55,10 +59,54 @@
                 </a></td>
             <td th:if="${userId == el.author.id} or ${isAdmin}">
                 <a th:href="'/exercises/' + ${el.id} + '/delete'">del</a></td>
-
         </tr>
     </table>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">@</span>
+        </div>
+        <input type="text" class="form-control" aria-describedby="basic-addon1"
+               id="input" onkeyup="filter()" placeholder="Search for name..">
+    </div>
+<script type="text/javascript">
+    function filter() {
+        var input, filter, table, tr, th, i, txtValue;
+        input = document.getElementById("input");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("table");
+        tr = table.getElementsByTagName("tr");
 
+        for (i = 0; i < tr.length; i++) {
+            th = tr[i].getElementsByTagName("th")[0];
+            if (th) {
+                txtValue = th.textContent || th.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    };
+    document.addEventListener('DOMContentLoaded', () => {
+        const getSort = ({ target }) => {
+            const order = (target.dataset.order = -(target.dataset.order || -1));
+            const index = [...target.parentNode.cells].indexOf(target);
+            const collator = new Intl.Collator(['en', 'ru'], { numeric: true });
+            const comparator = (index, order) => (a, b) => order * collator.compare(
+                a.children[index].innerHTML,
+                b.children[index].innerHTML
+            );
+            for(const tBody of target.closest('table').tBodies)
+                tBody.append(...[...tBody.rows].sort(comparator(index, order)));
+
+            for(const cell of target.parentNode.cells)
+                cell.classList.toggle('sorted', cell === target);
+        };
+        document.querySelectorAll('.table thead').forEach(tableTH => tableTH.
+        addEventListener('click', () => getSort(event)));
+    });
+</script>
 
 </body>
 </html>

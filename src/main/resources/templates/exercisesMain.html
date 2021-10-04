@@ -8,13 +8,16 @@
           integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <style th:if="${design} != 'standard'">
+        body {
+            background-color: darkgrey;
+        }
+    </style>
 </head>
 <body>
 <div th:insert="parts/tags :: tags"></div>
 
 <div th:insert="parts/header :: header"></div>
-
-<div th:insert="parts/exercise :: createExercise"></div>
 
 <div th:insert="parts/exercise :: allExercises"></div>
 

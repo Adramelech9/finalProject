@@ -6,7 +6,11 @@
     <link rel="stylesheet" type="text/css"
           href="/webjars/bootstrap/css/bootstrap.min.css" />
     <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-
+    <style th:if="${design} != 'standard'">
+        body {
+            background-color: darkgrey;
+        }
+    </style>
 </head>
 <body>
 <div th:insert="parts/header :: header"></div>

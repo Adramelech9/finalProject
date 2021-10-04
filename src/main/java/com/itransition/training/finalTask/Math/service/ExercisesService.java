@@ -53,9 +53,16 @@ public class ExercisesService {
             exerciseRepository.delete(getExercises(id));
     }
 
-    public Long CreateExercises(String name, String condition, String theme, String tags, String images, String rightAnswers, OAuth2User currentUser) {
-        User user = userService.addTask(currentUser);
-        Exercises exercises = new Exercises(name, condition, theme, tags, images, rightAnswers, user);
+    public Long CreateExercises(String name, String condition, String theme,
+                                String tags, String images, String rightAnswers,
+                                OAuth2User currentUser, String idUser) {
+        User user;
+        if (idUser == null) user = userService.getUser(currentUser);
+        else if (!userService.getUser(currentUser).isAdmin())
+            user = userService.addTask(currentUser);
+        else user = userService.getUser(idUser);
+        Exercises exercises = new Exercises(
+                name, condition, theme, tags, images, rightAnswers, user);
         exerciseRepository.save(exercises);
         tagsService.addTags(tags);
         return exercises.getId();
@@ -151,5 +158,9 @@ public class ExercisesService {
 
     public boolean isAdmin(OAuth2User currentUser) {
         return userService.isAdmin(currentUser);
+    }
+
+    public User user(OAuth2User currentUser) {
+        return userService.getUser(currentUser);
     }
 }
