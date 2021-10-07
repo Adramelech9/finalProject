@@ -24,6 +24,7 @@ public class UserAnswerService {
             u.setAnswer(answer);
             userAnswerRepository.save(u);
         }
+        if (isRightAnswers(currentUser, exercises, answer)) userService.addRightAnswers(user);
     }
 
     public String getUserAnswer(OAuth2User currentUser, Exercises exercises) {

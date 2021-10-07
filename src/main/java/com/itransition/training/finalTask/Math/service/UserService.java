@@ -100,4 +100,9 @@ public class UserService implements UserDetailsService {
     public boolean isAdmin(OAuth2User currentUser) {
         return getUser(currentUser).isAdmin();
     }
+
+    public void addRightAnswers(User user) {
+        user.setTasksSolved(user.getTasksSolved() + 1);
+        userRepository.save(user);
+    }
 }

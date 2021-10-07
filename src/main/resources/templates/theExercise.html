@@ -16,7 +16,7 @@
 </head>
 <body>
 <div th:if="${!read_only}" th:insert="parts/header :: header"></div>
-<a href="/">Main</a>
+<a href="/" th:text="#{mainLink}"></a>
 <div class="container mt-5">
     <div th:each="el : ${exercises}" class="alert alert-info mt-2">
         <a th:text="${rating}"></a><i class="far fa-star"></i><br>
@@ -27,12 +27,12 @@
             <a th:href="'/exercises/' + ${el.id} +'/rating/4'">4</a>
             <a th:href="'/exercises/' + ${el.id} +'/rating/5'">5</a>
         </div>
-        <h th:text="${el.name}"/>
+        <h3 th:text="${el.name}"/>
         <p th:text="${el.theme}"/>
         <p th:text="${el.tags}"/>
         <p th:text="${el.condition}"/>
         <p th:text="${el.images}"/>
-        <b>Author: </b>
+        <b th:text="#{author}"/>
         <a th:href="'/office/' + ${el.author.id}" th:text="${el.authorName}"></a><br>
         <div th:if="${!read_only}">
             <a th:href="'/exercises/' + ${el.id} +'/like'">
@@ -46,35 +46,33 @@
                 <i th:if="${!dislike}"  class="far fa-thumbs-down"></i>
             </a><br>
             <a th:href="'/office/' + ${el.author.id} + '?exercise=' + ${el.id}"
-            th:if="${isCurrentUser} or ${isAdmin}">edit</a></td>
+            th:if="${isCurrentUser} or ${isAdmin}" th:text="#{edit}"/></td>
             <a th:href="'/exercises/' + ${el.id} + '/delete'"
-               th:if="${isCurrentUser} or ${isAdmin}">delete</a>
+               th:if="${isCurrentUser} or ${isAdmin}" th:text="#{delete}"/>
 
             <form th:if="${!isRightAnswers}" th:action="'/exercises/' + ${el.id} + '/answer'" method="post">
-                <input name="answer" placeholder="your answer..">
+                <input name="answer" th:placeholder="#{your_answer} + '..'"/>
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/><br>
-                <button type="submit">Verity</button>
+                <button type="submit" th:text="#{verity}"/>
             </form>
 
         </div>
         <div th:if="${!read_only}">
             <p th:if="${!isRightAnswers} and ${answer} != 'your answer..'"
-               class="alert alert-danger" role="alert"> "[[${answer}]]" isn`t right
-            </p>
+               class="alert alert-danger" role="alert" th:text="'\'' + ${answer} + '\' ' + #{is`nt_right}"/>
             <p th:if="${isRightAnswers}"
-               class="alert alert-success" role="alert"> "[[${answer}]]" is right
-            </p>
+               class="alert alert-success" role="alert" th:text="'\'' + ${answer} + '\' ' + #{is_right}"/>
         </div>
         <form th:if="${!read_only}" method="post"
               th:action="'/exercises/' + ${el.id} + '/comment'">
-            <input name="comment" placeholder="your comment..">
+            <input name="comment" th:placeholder="#{your_comment}">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/><br>
-            <button type="submit">Add comment</button>
+            <button type="submit" th:text="#{add_comment}"/>
         </form>
     </div>
     <div th:each="el : ${comment}" class="alert alert-info m-lg-5">
         <p th:text="${el.text}"/>
-        <b>Author: </b><p th:text="${el.idCommentUser.username}"/>
+        <b th:text="#{author} + ':'"/><p th:text="${el.idCommentUser.username}"/>
         <div th:if="${!read_only}" th:each="number : ${exercises}">
             <a th:href="'/exercises/' + ${number.id} + '/like/' + ${el.id}">
                 <i th:text="${el.getCommentLikes().size()}"/>

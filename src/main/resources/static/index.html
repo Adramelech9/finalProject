@@ -8,8 +8,6 @@
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width" />
     <base href="/" />
-    <link rel="stylesheet" type="text/css"
-          href="/webjars/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
           integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
@@ -17,24 +15,28 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="/webjars/js-cookie/js.cookie.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
 
 </head>
 <body>
 <div th:insert="parts/tags :: tags"></div>
 
 <div class="container unauthenticated">
-    With GitHub: <a href="/oauth2/authorization/github">click here</a><br>
-    With Facebook: <a href="/oauth2/authorization/facebook">click here</a><br>
-    With Google: <a href="/oauth2/authorization/google">click here</a><br>
+    <a th:text="#{login}"/>
+    <a href="/oauth2/authorization/github"> GitHub</a>
+    <a href="/oauth2/authorization/facebook"> Facebook</a>
+    <a href="/oauth2/authorization/google"> Google</a><br>
 </div>
 
 <div class="container authenticated" style="display:none">
     <div th:insert="parts/header :: header"></div>
 
-    <h1>Welcome, <span id="user"></span></h1>
+    <h1> [[#{welcome}]] <span id="user"></span></h1>
 
     <div>
-        <button onClick="logout()" class="btn btn-primary">Logout</button>
+        <button onClick="logout()" class="btn btn-primary" th:text="#{logout}"/>
     </div>
     <br>
 </div>

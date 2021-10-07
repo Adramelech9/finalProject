@@ -1,8 +1,12 @@
 <div th:fragment="header">
     <div>
-        <a href="/language">lan</a>
-        <a href="/design">design</a>
-        <a href="/office">move to personal office</a>
-        <a href="/exercises">exercises</a><br>
+        <!--
+        <a href="/language">language</a>
+        -->
+        <a href="/exercises" th:text="#{exercises}"/>
+        <a href="/office" th:text="#{office}"/>
+        <a href="/design" th:text="#{design}"/>
+        <a href="?lang=ru">ru </a>
+        <a href="?lang=en">/ en</a><br>
     </div>
 </div>

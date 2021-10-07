@@ -90,10 +90,15 @@ public class UserController {
         Set<Exercises> exercises = user.getExercises();
         model.addAttribute("exercises", exercises);
         model.addAttribute("exercise", exercise);
-        model.addAttribute("user", user);
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("taskCreated", user.getTasksCreated());
+        model.addAttribute("taskSolved", user.getTasksSolved());
+        model.addAttribute("getId", user.getId());
         model.addAttribute("isCurrentUser", id.equals(currentUser.getName()));
         model.addAttribute("isAdmin", userService.isAdmin(currentUser));
         model.addAttribute("userId", currentUser.getName());
+        model.addAttribute("design", userService.getUser(currentUser).getDesign());
+
         return "userExercises";
     }
 }
