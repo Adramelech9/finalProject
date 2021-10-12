@@ -1,6 +1,7 @@
 package com.itransition.training.finalTask.Math.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,6 +10,7 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @NotBlank
     private String text;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "exercises_id")

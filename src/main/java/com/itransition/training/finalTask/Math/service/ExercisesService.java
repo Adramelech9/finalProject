@@ -41,8 +41,8 @@ public class ExercisesService {
             e.setTags(tags);
             e.setImages(images);
             e.setRightAnswers(rightAnswers);
-
             exerciseRepository.save(e);
+            tagsService.addTags(tags);
         }
     }
 

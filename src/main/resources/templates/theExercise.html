@@ -72,7 +72,7 @@
     </div>
     <div th:each="el : ${comment}" class="alert alert-info m-lg-5">
         <p th:text="${el.text}"/>
-        <b th:text="#{author} + ':'"/><p th:text="${el.idCommentUser.username}"/>
+        <b th:text="#{author}"/><p th:text="${el.idCommentUser.username}"/>
         <div th:if="${!read_only}" th:each="number : ${exercises}">
             <a th:href="'/exercises/' + ${number.id} + '/like/' + ${el.id}">
                 <i th:text="${el.getCommentLikes().size()}"/>
