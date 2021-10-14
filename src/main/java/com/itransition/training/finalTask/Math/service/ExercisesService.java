@@ -28,9 +28,11 @@ public class ExercisesService {
     @Autowired
     private CommentService commentService;
 
-    public Iterable<Exercises> findAll() {
+    public Iterable<Exercises> listAll(String keyword) {
+        if (keyword != null) return exerciseRepository.search(keyword);
         return exerciseRepository.findAll();
     }
+
     public Iterable<Exercises> findAll2(Pageable pageable) {
         return exerciseRepository.findAll(pageable);
     }

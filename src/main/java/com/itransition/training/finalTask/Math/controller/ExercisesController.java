@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -54,7 +55,6 @@ public class ExercisesController {
         model.addAttribute("body", body);
         model.addAttribute("page", page);
         model.addAttribute("url", "/");
-        model.addAttribute("exercises", exercisesService.findAll());
         model.addAttribute("tags", exercisesService.getTags());
         return "../static/index";
     }
@@ -62,10 +62,12 @@ public class ExercisesController {
     @GetMapping("/exercises")
     public String exercises(
             @AuthenticationPrincipal OAuth2User currentUser,
+            @Param("keyword") String keyword,
             Model model) {
         User user = exercisesService.user(currentUser);
         model.addAttribute("design", user.getDesign());
-        model.addAttribute("exercises", exercisesService.findAll());
+        model.addAttribute("exercises", exercisesService.listAll(keyword));
+        model.addAttribute("keyword", keyword);
         model.addAttribute("userId", currentUser.getName());
         model.addAttribute("tags", exercisesService.getTags());
         model.addAttribute("isAdmin", exercisesService.isAdmin(currentUser));
@@ -81,12 +83,10 @@ public class ExercisesController {
             @RequestParam String theme,
             @RequestParam String tags,
             @RequestParam String images,
-            @RequestParam String rightAnswers,
-            Model model) {
+            @RequestParam String rightAnswers) {
         Long id = exercisesService.CreateExercises(
                 name, condition, theme, tags, images,
                 rightAnswers, currentUser, idUser);
-        model.addAttribute("exercises", exercisesService.findAll());
         return "redirect:/exercises/" + id;
     }
 
@@ -136,7 +136,6 @@ public class ExercisesController {
             model.addAttribute("isAdmin", exercisesService.isAdmin(currentUser));
             model.addAttribute("user", exercisesService.user(currentUser));
             model.addAttribute("design", exercisesService.user(currentUser).getDesign());
-
         } else {
             model.addAttribute("isVoted", true);
             model.addAttribute("read_only", true);
