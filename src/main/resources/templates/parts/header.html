@@ -9,4 +9,15 @@
         <a href="?lang=ru">ru </a>
         <a href="?lang=en">/ en</a><br>
     </div>
+    <form th:action="@{/exercises}">
+        Filter: <input type="text" name="keyword" id="keyword" size="50" th:value="${keyword}" required />
+        <input type="submit" value="Search" />
+        <input type="button" value="Clear" id="btnClear" onclick="clearSearch()" />
+    </form>
+
+    <script type="text/javascript">
+        function clearSearch() {
+            window.location = "[[@{/exercises}]]";
+        }
+    </script>
 </div>
