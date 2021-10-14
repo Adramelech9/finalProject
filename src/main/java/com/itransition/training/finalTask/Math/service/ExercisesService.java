@@ -6,6 +6,7 @@ import com.itransition.training.finalTask.Math.model.Tags;
 import com.itransition.training.finalTask.Math.model.User;
 import com.itransition.training.finalTask.Math.repository.ExerciseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,9 @@ public class ExercisesService {
 
     public Iterable<Exercises> findAll() {
         return exerciseRepository.findAll();
+    }
+    public Iterable<Exercises> findAll2(Pageable pageable) {
+        return exerciseRepository.findAll(pageable);
     }
 
     public void updateExercise(OAuth2User currentUser, Exercises e, String name,

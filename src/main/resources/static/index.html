@@ -40,8 +40,80 @@
     </div>
     <br>
 </div>
-<div th:insert="parts/exercise :: allExercises"></div>
+<div class="container mt-3">
+    <div th:each="el : ${page}" class="alert alert-info mt-2">
+        <!--<div>
+            <img th:src="@{/img/{filename}(filename = ${el.images})}">
+        </div> -->
+        <a th:text="${el.rating}"></a><i class="far fa-star"></i><br>
+        <h3 th:text="${el.name}"/>
+        <p th:text="${el.theme}"/>
+        <p th:text="${el.tags}"/>
+        <b th:text="#{author}"/>
+        <a th:href="'/office/' + ${el.author.id}" th:text="${el.authorName}"></a><br>
+        <a th:href="'/exercises/' + ${el.id}" class="btn btn-warning" th:text="#{details}"/><br>
+        <a th:href="'/office/' + ${el.author.id} + '?exercise=' + ${el.id}"
+           th:if="${userId == el.author.id} or ${isAdmin}" th:text="#{edit}"/></td>
+        <a th:href="'/exercises/' + ${el.id} + '/delete'"
+           th:if="${userId == el.author.id} or ${isAdmin}" th:text="#{delete}"/><br>
+    </div>
+    <div>
+        <ul class="pagination">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" th:text="#{pages}"></a>
+            </li>
+            <th:block th:each="pageNumber : ${body}">
+                <li th:if="${pageNumberStat.first}" class="page-item">
+                    <a th:if="${page.getNumber()} > 0" class="page-link" th:href="${url} + '?page='+ ${page.getNumber() - 1} + '&size=' + ${page.getSize()}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item active" th:if="${pageNumber} == ${page.getNumber()+1}">
+                    <a class="page-link" th:text="${pageNumber}" href="#"></a>
+                </li>
+                <li class="page-item disabled" th:if="${pageNumber} == -1">
+                    <a class="page-link" href="#">...</a>
+                </li>
+                <li class="page-item" th:if="${pageNumber} != -1 and ${pageNumber} != ${page.getNumber() + 1}">
+                    <a class="page-link" th:text="${pageNumber}" th:href="${url} + '?page='+ ${pageNumber - 1} + '&size=' + ${page.getSize()}"></a>
+                </li>
+                <li th:if="${pageNumberStat.last}" class="page-item"  aria-label="Next">
+                    <a th:if="${page.getNumber()} < ${body.length - 1}" class="page-link" th:href="${url} + '?page='+ ${page.getNumber() + 1} + '&size=' + ${page.getSize()}">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </th:block>
+        </ul>
 
+        <ul class="pagination">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" th:text="#{elements}"></a>
+            </li>
+            <th:block th:each="pageNumber : ${sizeList}">
+                <li th:if="${pageNumber == page.getSize()}" class="page-item active" >
+                    <a class="page-link" href="#" th:text="${pageNumber}"></a>
+                </li>
+                <li th:if="${pageNumber != page.getSize()}" class="page-item">
+                    <a class="page-link"
+                       th:href="${url} + '?page='+ ${page.getNumber() + 1} + '&size=' + ${pageNumber}"
+                       th:text="${pageNumber}">
+                    </a>
+                </li>
+            </th:block>
+        </ul>
+
+        <ul class="pagination">
+            <th:block>
+                <li class="page-item">
+                    <a class="page-link"
+                       th:href="${url} + '?page=0&size=5&sort=rating,desc'"
+                       th:text="#{showTop}">
+                    </a>
+                </li>
+            </th:block>
+        </ul>
+    </div>
+</div>
 <script type="text/javascript">
     $
         .ajaxSetup({
