@@ -12,10 +12,8 @@ public interface ExerciseRepository extends CrudRepository<Exercises, Long> {
 
     Page<Exercises> findAll(Pageable pageable);
 
-    Page<Exercises> findByTags(String tags, Pageable pageable);
-
-    @Query("select e from Exercises e where concat(" +
-            "e.name, e.condition, e.tags, e.theme, e.author.username) " +
+    @Query("select e from Exercises e join Comment c on e.id = c.idCommentExercise where concat(" +
+            "e.name, e.condition, e.tags, e.theme, e.author.username, c.text) " +
             "like %?1% ")
     List<Exercises> search(String keyword);
 }
