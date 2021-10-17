@@ -1,7 +1,7 @@
 <div th:fragment="createExercise">
     <div class="collapse" id="collapseExample">
         <div class="card card-body alert-info mt-2">
-            <form th:action="'/office/' + ${getId} + '/creat'" method="post">
+            <form th:action="'/office/' + ${getId} + '/creat'" method="post" enctype="multipart/form-data">
                 <input type="text" name="name" th:placeholder="#{name}"/><br>
                     <select name="theme">
                         <option selected="selected" th:text="#{theme}"></option>
@@ -12,7 +12,9 @@
                     </select>
                 <input type="text" name="tags" th:placeholder="#{tags}"/><br>
                 <textarea type="text" name="condition" th:placeholder="#{condition}"></textarea><br>
-                <input type="text" name="images" placeholder="images"/><br>
+                <input type="file" name="images" placeholder="first images"/><br>
+                <input type="file" name="images2" placeholder="second images"/><br>
+                <input type="file" name="images3" placeholder="third images"/><br>
                 <input type="text" name="rightAnswers" th:placeholder="#{rightAnswers}"/><br>
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/><br>
                 <button type="submit" th:text="#{create}"/>

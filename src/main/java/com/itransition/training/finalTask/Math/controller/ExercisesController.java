@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 @Controller
@@ -82,10 +84,22 @@ public class ExercisesController {
             @RequestParam String condition,
             @RequestParam String theme,
             @RequestParam String tags,
-            @RequestParam String images,
-            @RequestParam String rightAnswers) {
+            @RequestParam("images") MultipartFile images,
+            @RequestParam("images2") MultipartFile images2,
+            @RequestParam("images3") MultipartFile images3,
+            @RequestParam String rightAnswers) throws IOException {
+
+        String file = "";
+        if (images != null && !images.getOriginalFilename().isEmpty()) {
+            file += exercisesService.transferImagesToString(images);
+            if (images2 != null && !images2.getOriginalFilename().isEmpty()) {
+                file += " " + exercisesService.transferImagesToString(images2);
+                if (images3 != null && !images3.getOriginalFilename().isEmpty())
+                    file += " " + exercisesService.transferImagesToString(images3);
+            }
+        }
         Long id = exercisesService.CreateExercises(
-                name, condition, theme, tags, images,
+                name, condition, theme, tags, file,
                 rightAnswers, currentUser, idUser);
         return "redirect:/exercises/" + id;
     }
@@ -121,6 +135,7 @@ public class ExercisesController {
         if (!exercisesService.exists(id)) return "redirect:/exercises";
         ArrayList<Exercises> res = exercisesService.detailExercise(id);
         model.addAttribute("exercises", res);
+        model.addAttribute("arrImages", exercisesService.getArrImages(id));
         model.addAttribute("likes", exercisesService.likes(id));
         model.addAttribute("rating", exercisesService.rating(id));
         model.addAttribute("dislikes", exercisesService.dislikes(id));

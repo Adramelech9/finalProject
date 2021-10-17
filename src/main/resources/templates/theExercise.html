@@ -31,7 +31,9 @@
         <p th:text="${el.theme}"/>
         <p th:text="${el.tags}"/>
         <p th:text="${el.condition}"/>
-        <p th:text="${el.images}"/>
+        <div th:if="${el.images.length() > 5}" th:each="imgs : ${arrImages}">
+            <img th:src="'http://drive.google.com/uc?export=view&id=' + ${imgs}" width="200"/>
+        </div>
         <b th:text="#{author}"/>
         <a th:href="'/office/' + ${el.author.id}" th:text="${el.authorName}"></a><br>
         <div th:if="${!read_only}">
@@ -89,6 +91,5 @@
         </div>
     </div>
 </div>
-
 </body>
 </html>

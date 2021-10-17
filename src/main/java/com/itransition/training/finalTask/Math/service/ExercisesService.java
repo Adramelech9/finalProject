@@ -1,5 +1,9 @@
 package com.itransition.training.finalTask.Math.service;
 
+import com.google.api.client.http.FileContent;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;
+import com.itransition.training.finalTask.Math.drive.GoogleDriveUtils;
 import com.itransition.training.finalTask.Math.model.Comment;
 import com.itransition.training.finalTask.Math.model.Exercises;
 import com.itransition.training.finalTask.Math.model.Tags;
@@ -9,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -168,5 +175,26 @@ public class ExercisesService {
 
     public User user(OAuth2User currentUser) {
         return userService.getUser(currentUser);
+    }
+
+    public String transferImagesToString(MultipartFile images) throws IOException {
+        String folderId = "1yuziQ0moxl_319JYs3AXfm2-9ulZYRUj";
+        File fileMetadata = new File();
+        fileMetadata.setName(images.getOriginalFilename());
+        fileMetadata.setParents(Collections.singletonList(folderId));
+        java.io.File filePath = new java.io.File(
+                "/Users/denis/Desktop/" + images.getOriginalFilename());
+        FileContent mediaContent = new FileContent("image/jpeg", filePath);
+        Drive driveService = GoogleDriveUtils.getDriveService();
+
+        File file = driveService.files().create(fileMetadata, mediaContent)
+                .setFields("id, parents")
+                .execute();
+        return file.getId();
+    }
+
+    public String[] getArrImages(Long id) {
+        Exercises exercises = exerciseRepository.findById(id).orElseThrow();
+        return exercises.getImages().split(" ");
     }
 }
