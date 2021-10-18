@@ -89,15 +89,7 @@ public class ExercisesController {
             @RequestParam("images3") MultipartFile images3,
             @RequestParam String rightAnswers) throws IOException {
 
-        String file = "";
-        if (images != null && !images.getOriginalFilename().isEmpty()) {
-            file += exercisesService.transferImagesToString(images);
-            if (images2 != null && !images2.getOriginalFilename().isEmpty()) {
-                file += " " + exercisesService.transferImagesToString(images2);
-                if (images3 != null && !images3.getOriginalFilename().isEmpty())
-                    file += " " + exercisesService.transferImagesToString(images3);
-            }
-        }
+        String file = exercisesService.buildStringFile(images, images2, images3);
         Long id = exercisesService.CreateExercises(
                 name, condition, theme, tags, file,
                 rightAnswers, currentUser, idUser);
@@ -113,10 +105,13 @@ public class ExercisesController {
             @RequestParam String condition,
             @RequestParam String theme,
             @RequestParam String tags,
-            @RequestParam String images,
-            @RequestParam String rightAnswers) {
-        exercisesService.updateExercise(currentUser, e, name, condition, theme, tags, images, rightAnswers);
-        return "redirect:/office/" + id;
+            @RequestParam MultipartFile images,
+            @RequestParam MultipartFile images2,
+            @RequestParam MultipartFile images3,
+            @RequestParam String rightAnswers) throws IOException {
+        String file = exercisesService.buildStringFile(images, images2, images3);
+        exercisesService.updateExercise(currentUser, e, name, condition, theme, tags, file, rightAnswers);
+        return "redirect:/exercises/" + e.getId();
     }
 
     @GetMapping("/exercises/{id}/delete")

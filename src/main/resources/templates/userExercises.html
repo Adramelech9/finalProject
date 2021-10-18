@@ -18,7 +18,7 @@
 
 <div th:if="${isCurrentUser} or ${isAdmin}" th:insert="parts/exercise :: createExercise"></div>
 <div th:if="${exercise}">
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         <input type="text" name="name" th:placeholder="#{name}" th:value="${exercise.name}"/><br>
         <select name="theme">
             <option selected="selected">[[${exercise.theme}]]</option>
@@ -29,7 +29,12 @@
         </select>
         <input type="text" name="tags" th:placeholder="#{tags}" th:value="${exercise.tags}"/><br>
         <textarea type="text" name="condition" th:placeholder="#{condition}">[[${exercise.condition}]]</textarea><br>
-        <input type="text" name="images" placeholder="images" th:value="${exercise.images}"/><br>
+        <input type="file" name="images" placeholder="images" th:value="${exercise.images.split(' ')[0]}"/><br>
+        <input type="file" name="images2" placeholder="images" th:if="${exercise.images.split(' ').length > 1}" th:value="${exercise.images.split(' ')[1]}"/><br>
+        <input type="file" name="images2" placeholder="images" th:if="${exercise.images.split(' ').length <= 1}"/><br>
+        <input type="file" name="images3" placeholder="images" th:if="${exercise.images.split(' ').length > 2}" th:value="${exercise.images.split(' ')[2]}"/><br>
+        <input type="file" name="images3" placeholder="images" th:if="${exercise.images.split(' ').length <= 2}"/><br>
+
         <input type="text" name="rightAnswers" th:placeholder="#{rightAnswers}" th:value="${exercise.rightAnswers}"/><br>
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/><br>
         <button type="submit" th:text="#{edit}"/>

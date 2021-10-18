@@ -24,7 +24,7 @@ public class UserAnswerService {
             u.setAnswer(answer);
             userAnswerRepository.save(u);
         }
-        if (isRightAnswers(currentUser, exercises, answer)) userService.addRightAnswers(user);
+        if (isRightAnswers(currentUser, exercises)) userService.addRightAnswers(user);
     }
 
     public String getUserAnswer(OAuth2User currentUser, Exercises exercises) {
@@ -34,11 +34,13 @@ public class UserAnswerService {
         return userAnswerRepository.findUserAnswerByIdExerciseAndIdUser(exercises, user).getAnswer();
     }
 
-    public boolean isRightAnswers(OAuth2User currentUser, Exercises exercises, String answer) {
+    public boolean isRightAnswers(OAuth2User currentUser, Exercises exercises) {
         User user = userService.getUser(currentUser);
         UserAnswer u = userAnswerRepository.findUserAnswerByIdExerciseAndIdUser(exercises, user);
         if (u == null) return false;
-        if (u.getAnswer().equals(answer)) return true;
+        String[] split = exercises.getRightAnswers().split(" ");
+        for (int i = 0; i < split.length; i++)
+            if (u.getAnswer().equals(split[i])) return true;
         return false;
     }
 }

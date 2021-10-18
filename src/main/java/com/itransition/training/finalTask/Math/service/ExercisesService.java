@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -155,8 +156,7 @@ public class ExercisesService {
 
     public boolean isRightAnswers(OAuth2User currentUser, Long id) {
         Exercises exercises = exerciseRepository.findById(id).orElseThrow();
-        return userAnswerService.isRightAnswers(
-                currentUser, exercises, exercises.getRightAnswers());
+        return userAnswerService.isRightAnswers(currentUser, exercises);
     }
 
     public String getAnswer(OAuth2User currentUser, Long id) {
@@ -196,5 +196,18 @@ public class ExercisesService {
     public String[] getArrImages(Long id) {
         Exercises exercises = exerciseRepository.findById(id).orElseThrow();
         return exercises.getImages().split(" ");
+    }
+
+    public String buildStringFile(@RequestParam MultipartFile images, @RequestParam MultipartFile images2, @RequestParam MultipartFile images3) throws IOException {
+        String file = "";
+        if (images != null && !images.getOriginalFilename().isEmpty()) {
+            file += transferImagesToString(images);
+            if (images2 != null && !images2.getOriginalFilename().isEmpty()) {
+                file += " " + transferImagesToString(images2);
+                if (images3 != null && !images3.getOriginalFilename().isEmpty())
+                    file += " " + transferImagesToString(images3);
+            }
+        }
+        return file;
     }
 }
