@@ -105,4 +105,12 @@ public class UserService implements UserDetailsService {
         user.setTasksSolved(user.getTasksSolved() + 1);
         userRepository.save(user);
     }
+
+    public void editRole(String id) {
+        User user = getUser(id);
+        if (user.isAdmin() && user.getRoles().contains(Role.USER))
+            user.getRoles().remove(Role.ADMIN);
+        else user.getRoles().add(Role.ADMIN);
+        userRepository.save(user);
+    }
 }

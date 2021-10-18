@@ -101,4 +101,12 @@ public class UserController {
 
         return "userExercises";
     }
+
+    @GetMapping("/update/{id}/role")
+    public String editRole(
+            @AuthenticationPrincipal OAuth2User currentUser,
+            @PathVariable String id) {
+        if (userService.isAdmin(currentUser)) userService.editRole(id);
+        return "redirect:/admin_panel";
+    }
 }

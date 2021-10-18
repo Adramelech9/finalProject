@@ -27,9 +27,9 @@
             <th><a th:text="${el.username}" th:href="'/user/' + ${el.id}"/></th>
             <th th:text="${el.roles}"/>
             <td th:text="${el.isActive()}"/>
-            <td><a th:href="'delete/' + ${el.id}">del</a></td>
-            <td><a th:href="'update/' + ${el.id}">update</a></td>
-
+            <td th:if="${el.id != '86802154'}"><a th:href="'delete/' + ${el.id}">del</a></td>
+            <td th:if="${el.id != '86802154'}"><a th:href="'update/' + ${el.id}">block/unblock</a></td>
+            <td th:if="${el.id != '86802154'}"><a th:href="'update/' + ${el.id} + '/role'">edit role</a></td>
         </tr>
     </table>
     <div class="input-group mb-3">
