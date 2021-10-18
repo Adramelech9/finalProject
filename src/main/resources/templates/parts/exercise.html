@@ -31,9 +31,6 @@
 <div th:fragment="allExercises">
     <div class="container mt-3">
         <div th:each="el : ${exercises}" class="alert alert-info mt-2">
-            <!--<div>
-                <img th:src="@{/img/{filename}(filename = ${el.images})}">
-            </div> -->
             <a th:text="${el.rating}"></a><i class="far fa-star"></i><br>
             <h3 th:text="${el.name}"/>
             <p th:text="${el.theme}"/>
