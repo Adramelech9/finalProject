@@ -24,7 +24,7 @@
         </thead>
         <tr th:each="el : ${users}">
             <td th:text="${el.id}"/>
-            <th><a th:text="${el.username}" th:href="'/user/' + ${el.id}"/></th>
+            <th><a th:text="${el.username}" th:href="'/office/' + ${el.id}"/></th>
             <th th:text="${el.roles}"/>
             <td th:text="${el.isActive()}"/>
             <td th:if="${el.id != '86802154'}"><a th:href="'delete/' + ${el.id}">del</a></td>

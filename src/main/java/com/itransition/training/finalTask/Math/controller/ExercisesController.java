@@ -30,6 +30,7 @@ public class ExercisesController {
     @GetMapping("/")
     public String authPage(
             Model model,
+            @AuthenticationPrincipal OAuth2User currentUser,
             @PageableDefault(sort = {"id"},
                     direction = Sort.Direction.DESC) Pageable pageable) {
 
@@ -52,6 +53,9 @@ public class ExercisesController {
                 body[i] = 1+i;
             }
         }
+        if (currentUser == null) model.addAttribute("design", "standard");
+        else model.addAttribute("design",
+                exercisesService.user(currentUser).getDesign());
 
         model.addAttribute("sizeList", sizeList);
         model.addAttribute("body", body);

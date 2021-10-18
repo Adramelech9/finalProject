@@ -17,8 +17,11 @@
     <script type="text/javascript" src="/webjars/js-cookie/js.cookie.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-
-
+    <style th:if="${design} != 'standard'">
+        body {
+            background-color: darkgrey;
+        }
+    </style>
 </head>
 <body>
 <div th:insert="parts/tags :: tags"></div>
@@ -42,9 +45,6 @@
 </div>
 <div class="container mt-3">
     <div th:each="el : ${page}" class="alert alert-info mt-2">
-        <!--<div>
-            <img th:src="@{/img/{filename}(filename = ${el.images})}">
-        </div> -->
         <a th:text="${el.rating}"></a><i class="far fa-star"></i><br>
         <h3 th:text="${el.name}"/>
         <p th:text="${el.theme}"/>
@@ -95,7 +95,7 @@
                 </li>
                 <li th:if="${pageNumber != page.getSize()}" class="page-item">
                     <a class="page-link"
-                       th:href="${url} + '?page='+ ${page.getNumber() + 1} + '&size=' + ${pageNumber}"
+                       th:href="${url} + '?page=0&size=' + ${pageNumber}"
                        th:text="${pageNumber}">
                     </a>
                 </li>

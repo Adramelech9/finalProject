@@ -70,11 +70,9 @@ public class ExercisesService {
     public Long CreateExercises(String name, String condition, String theme,
                                 String tags, String images, String rightAnswers,
                                 OAuth2User currentUser, String idUser) {
-        User user;
-        if (idUser == null) user = userService.getUser(currentUser);
-        else if (!userService.getUser(currentUser).isAdmin())
-            user = userService.addTask(currentUser);
-        else user = userService.getUser(idUser);
+        User user = userService.getUser(currentUser);
+        if (userService.getUser(currentUser).isAdmin() || idUser == user.getId())
+            userService.addTask(idUser);
         Exercises exercises = new Exercises(
                 name, condition, theme, tags, images, rightAnswers, user);
         exerciseRepository.save(exercises);

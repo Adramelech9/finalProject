@@ -83,11 +83,10 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id).orElseThrow();
     }
 
-    public User addTask(OAuth2User currentUser) {
-        User user = getUser(currentUser);
+    public User addTask(String idUser) {
+        User user = getUser(idUser);
         user.setTasksCreated(user.getTasksCreated() + 1);
         userRepository.save(user);
-
         return user;
     }
 

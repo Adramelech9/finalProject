@@ -15,8 +15,8 @@
     </style>
 </head>
 <body>
-<div th:if="${!read_only}" th:insert="parts/header :: header"></div>
-<a href="/" th:text="#{mainLink}"></a>
+<div th:if="${!read_only}" th:insert="parts/header :: header" class="container"></div>
+<a href="/" th:if="${read_only}" th:text="#{mainLink}"></a>
 <div class="container mt-5">
     <div th:each="el : ${exercises}" class="alert alert-info mt-2">
         <a th:text="${rating}"></a><i class="far fa-star"></i><br>

@@ -3,13 +3,13 @@
         <div class="card card-body alert-info mt-2">
             <form th:action="'/office/' + ${getId} + '/creat'" method="post" enctype="multipart/form-data">
                 <input type="text" name="name" th:placeholder="#{name}"/><br>
-                    <select name="theme">
-                        <option selected="selected" th:text="#{theme}"></option>
-                        <option>Geometry</option>
-                        <option>Algebra</option>
-                        <option>Number theory</option>
-                        <option>Java</option>
-                    </select>
+                <select name="theme">
+                    <option selected="selected" th:text="#{theme}"></option>
+                    <option>Geometry</option>
+                    <option>Algebra</option>
+                    <option>Number theory</option>
+                    <option>Java</option>
+                </select>
                 <input type="text" name="tags" th:placeholder="#{tags}"/><br>
                 <textarea type="text" name="condition" th:placeholder="#{condition}"></textarea><br>
                 <input type="file" name="images" placeholder="first images"/><br>

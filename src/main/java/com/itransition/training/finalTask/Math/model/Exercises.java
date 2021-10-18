@@ -13,7 +13,7 @@ public class Exercises {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @NotBlank(message = "The field cannot be empty")
+    @NotBlank
     private String name, condition, theme, rightAnswers;
     private String tags, images;
 
